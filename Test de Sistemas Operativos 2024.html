@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Test de Sistemas Operativos, enero 2024</title>
+<style>
+:root{--bg:#eef1f5;--card:#fff;--tx:#14202b;--mu:#5d6b78;--bd:#cfd7df;--ac:#2b59c3;--acb:#e6edfb;--ok:#17734a;--okb:#e1f4ea;--ko:#b3261e;--kob:#fbe6e4;--thb:#f0f3f8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f161d;--card:#18222c;--tx:#e8edf2;--mu:#9aa8b5;--bd:#2c3a47;--ac:#7ea2ee;--acb:#1d2b45;--ok:#5fd09a;--okb:#14301f;--ko:#ff8f86;--kob:#3a1a18;--thb:#1c2733;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f161d;--card:#18222c;--tx:#e8edf2;--mu:#9aa8b5;--bd:#2c3a47;--ac:#7ea2ee;--acb:#1d2b45;--ok:#5fd09a;--okb:#14301f;--ko:#ff8f86;--kob:#3a1a18;--thb:#1c2733;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:680px;margin:0 auto;padding:20px 16px 40px}
+.top{display:flex;justify-content:space-between;color:var(--mu);font-size:14px;margin-bottom:8px}
+.bar{height:6px;background:var(--bd);border-radius:3px;overflow:hidden;margin-bottom:18px}
+.bar i{display:block;height:100%;background:var(--ac);transition:width .3s}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:20px}
+h2{font:600 20px/1.4 Georgia,"Times New Roman",serif;margin:0 0 14px}
+h3{font-size:15px;margin:0 0 6px;color:var(--ac)}
+.ctx{background:var(--thb);border-radius:8px;padding:10px 12px;font-size:14px;margin:0 0 14px}
+.opt{display:flex;gap:10px;width:100%;text-align:left;font:inherit;color:inherit;background:var(--card);border:1.5px solid var(--bd);border-radius:10px;padding:11px 13px;margin-bottom:9px;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--ac);background:var(--acb)}
+.opt:focus-visible,.nx:focus-visible,.btn:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.opt:disabled{cursor:default;color:inherit}
+.opt.ok{border-color:var(--ok);background:var(--okb)}
+.opt.ko{border-color:var(--ko);background:var(--kob)}
+.res{border-radius:10px;padding:11px 13px;margin:6px 0 12px}
+.res p{margin:6px 0 0}
+.okr{background:var(--okb);color:var(--ok);font-weight:600}
+.kor{background:var(--kob);color:var(--tx);border-left:4px solid var(--ko)}
+.th{background:var(--thb);border-radius:10px;padding:12px 14px}
+.th p{margin:0}
+.nx,.btn{font:600 16px system-ui,sans-serif;background:var(--ac);color:var(--bg);border:0;border-radius:10px;padding:12px 20px;margin-top:14px;cursor:pointer}
+.btn.sec{background:var(--acb);color:var(--ac);margin-left:8px}
+.score{font:600 40px Georgia,serif;margin:4px 0 12px}
+ul{padding-left:20px}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<main><div id="app"></div></main>
+<script>
+const Q=[
+{n:1,q:"Sobre la separación entre mecanismos y políticas en un sistema operativo en la E/S:",o:["Decidir el orden en que se atienden las solicitudes de E/S es una política.","Gestionar las solicitudes de entrada/salida en la cola de un dispositivo es una política.","En la E/S no se utiliza esta separación entre mecanismo y política, se usa en la gestión de los procesos y de la memoria.","Decidir el orden en que se atienden las solicitudes de E/S es un mecanismo."],c:0,
+s:"Política = qué hacer (decidir el orden). Mecanismo = cómo hacerlo (gestionar la cola del dispositivo).",
+th:"Los mecanismos determinan cómo hacer algo y las políticas qué hacer. El mecanismo está en el kernel y cambiar de política solo debería exigir redefinir parámetros."},
+{n:2,q:"En un sistema operativo de multiprogramación:",o:["Se ejecuta más rápido un proceso.","Se utilizan menos estructuras de datos que un sistema monoprogramado.","Se ejecutan más procesos en el mismo periodo de tiempo que un sistema monoprogramado.","Se utiliza sólo en las grandes máquinas y no en la computación doméstica."],c:2,
+s:"Varios procesos comparten la CPU y se termina más trabajo en el mismo tiempo. Un proceso concreto no va más rápido.",
+th:"En multiprogramación varios procesos residen en memoria y la CPU pasa de uno a otro (p. ej. cuando uno espera E/S). Mejora el aprovechamiento de la CPU, no la velocidad de un proceso individual."},
+{n:3,q:"El tiempo de cambio de contexto:",o:["Es inferior entre dos hilos del mismo proceso que entre hilos de procesos distintos.","Es constante para dos hilos cualesquiera del sistema operativo.","Es mayor cuanto más grande es el cuanto de tiempo, si planificamos con un Round Robin.","Es inferior entre dos hilos de procesos distintos que entre hilos del mismo proceso."],c:0,
+s:"Los hilos del mismo proceso comparten espacio de direcciones y recursos, así que hay menos que cambiar.",
+th:"Tu PDF cita entre los beneficios clave de los hilos que se tarda menos en hacer un cambio de contexto entre hilos de un mismo proceso."},
+{n:4,q:"La interrupción de fallo de página se produce desde:",o:["Cualquier proceso en estado “preparado”.","El proceso que está en estado “en ejecución”.","El proceso que está bloqueado en espera de la página del disco.","Desde cualquiera de los estados “en ejecución”, “preparado” o “bloqueado”."],c:1,
+s:"Es una trampa que lanza el proceso que se está ejecutando al acceder a una página que no está en memoria.",
+th:"Si el bit de validez de la página es inválido se genera una trampa de fallo de página hacia el SO. El proceso pasa a bloqueado mientras se carga la página y luego se reinicia la instrucción."},
+{n:5,q:"Sobre segmentación paginada, ¿cuál de las siguientes afirmaciones es FALSA?",o:["En un sistema de memoria virtual se intercambian segmentos entre memoria principal y disco.","La memoria principal está dividida en marcos de página.","El tamaño máximo de página coincide con el tamaño del marco en memoria física.","Cada proceso tiene una tabla de segmentos y tantas tablas de páginas como número de segmentos tenga el proceso."],c:0,
+s:"En segmentación paginada lo que se intercambia son páginas, no segmentos completos.",
+th:"Se paginan los segmentos: la entrada de la tabla de segmentos apunta a la tabla de páginas de ese segmento, la memoria se divide en marcos y página y marco miden lo mismo."},
+{n:6,q:"Si en el instante t el conjunto de trabajo es CT(t, 10) = { 1, 2, 5, 6, 7 } con una ventana Δ de 10:",o:["Es imposible que en el instante t + 1 tras la siguiente referencia a memoria se cumpla CT(t+1, 10) = { 1, 2, 6, 7 }.","El conjunto de trabajo con una ventana de 10 no puede ser CT(t, 10) = { 1, 2, 5, 6, 7 }, tiene que tener 10 páginas distintas.","El conjunto de trabajo después de una nueva referencia a memoria en el instante t+1 tiene que tener una página nueva.","En el instante t + 1 tras la siguiente referencia a memoria podría ser que CT(t+1, 10) = { 1, 2, 6, 7 }."],c:3,
+s:"Al avanzar la ventana sale la referencia más antigua. Si el 5 solo aparecía ahí y la nueva referencia repite una página ya presente, el 5 desaparece.",
+th:"El conjunto de trabajo son las páginas distintas de las últimas Δ referencias: puede tener entre 1 y Δ páginas y cambia al desplazarse la ventana."},
+{n:7,q:"En un sistema de paginación:",o:["El número de entradas de la tabla de páginas depende del espacio físico de la memoria.","El número de entradas de la tabla de páginas es superior al número de entradas de la tabla de páginas en dos niveles.","El número de entradas de una tabla invertida depende del espacio físico de la memoria.","La tabla de páginas y la tabla invertida tienen el mismo número de entradas."],c:2,
+s:"La tabla invertida tiene una entrada por cada marco físico, así que depende de la memoria real.",
+th:"La tabla de páginas normal tiene una entrada por página virtual. La invertida tiene una por cada marco de página real y se indexa con una función hash."},
+{n:8,q:"Sobre la TLB podemos afirmar que:",o:["Es una mejora imprescindible para poder implementar un sistema de memoria virtual paginado eficiente.","Si al intentar traducir una dirección virtual, el número de la página correspondiente no se encuentra en la TLB, se provocará un fallo de página.","En la TLB se encuentra únicamente la traducción de un subconjunto de las páginas del proceso que está “En Ejecución”.","Después de acceder a la TLB siempre se tiene que acceder a la tabla de páginas del proceso."],c:2,
+s:"La TLB guarda solo unas pocas traducciones recientes del proceso en ejecución. Un fallo de TLB no es un fallo de página: se consulta la tabla de páginas.",
+th:"TLB: caché hardware pequeña de pares (clave, valor). Acierto: no hace falta la tabla de páginas. Fallo: se consulta la tabla y luego se accede al dato. Mejora el rendimiento, pero no es imprescindible."},
+{n:9,q:"Sobre el BCP se puede afirmar que NO almacena:",o:["El valor de los registros de la CPU en el momento en el que el proceso fue interrumpido.","La lista de ficheros abiertos por el proceso.","La información de planificación (prioridad, estado ..)","La pila del proceso."],c:3,
+s:"El BCP guarda los registros (incluido el puntero de pila), la planificación y los ficheros abiertos, pero no la pila en sí, que está en la memoria del proceso.",
+th:"BCP = información de estado del procesador (registros, contador de programa, punteros de pila) + información de control (planificación y estado, punteros a memoria, ficheros abiertos)."},
+{n:10,q:"¿Cuántos procesos nuevos crea la sentencia for (i=0; i&lt;3; i++) fork(); ?",o:["7.","6.","4.","3."],c:0,
+s:"Cada fork() duplica el número de procesos: tras 3 iteraciones hay 2<sup>3</sup> = 8, es decir, 7 nuevos.",
+th:"fork() crea un hijo que es copia del padre y ambos siguen en el bucle. Con n iteraciones hay 2<sup>n</sup> procesos y 2<sup>n</sup> − 1 nuevos."},
+{n:11,q:"En un sistema de ficheros Unix, el directorio “julio” contiene los ficheros “enunciado.doc” y “examen.doc”, siendo “examen.doc” un enlace directo (hard-link) a “enunciado.doc”. ¿Cuál de las siguientes afirmaciones es FALSA?",o:["El campo “número de enlaces” del i-nodo que representa “enunciado.doc” contiene un valor mayor o igual a 2.","El campo “número de enlaces” del i-nodo que representa a “examen.doc” contiene un valor mayor o igual a 2.","El directorio “julio”, el fichero “enunciado.doc” y el fichero “examen.doc” están representados por 3 i-nodos diferentes.","El campo “número de enlaces” del i-nodo que representa a “julio” contiene un valor mayor o igual a 2."],c:2,
+s:"enunciado.doc y examen.doc son el mismo i-nodo (enlace duro), así que hay 2 i-nodos distintos, no 3.",
+th:"Un enlace duro es otra entrada de directorio al mismo i-nodo, y el contador de enlaces cuenta cuántas hay. Un directorio tiene al menos 2 enlaces (su entrada en el padre y su propio “.”)."},
+{n:12,q:"Tenemos un sistema paginado cuyo tamaño de página es de 2048 bytes. El tamaño que ocupa cada entrada de la tabla de páginas es de 32 bits. Si tenemos un proceso de 7553 bytes, ¿qué fragmentación interna y externa se produce? ¿Cuántos bits de la tabla de páginas están siendo utilizados?",o:["Fragmentación interna: 639 bytes; fragmentación externa: No existe; uso de la tabla de páginas: 128 bits.","Fragmentación interna: 639 bytes; fragmentación externa: No existe; uso de la tabla de páginas: 96 bits.","Fragmentación interna: 639 bytes; fragmentación externa: 767 bytes; uso de la tabla de páginas: 96 bits.","Fragmentación interna: No existe; fragmentación externa: 639 bytes; uso de la tabla de páginas: 128 bits."],c:0,
+s:"7553 = 3 × 2048 + 1409, luego 4 páginas. Interna: 2048 − 1409 = 639 bytes. Externa: no existe. Tabla: 4 × 32 = 128 bits.",
+th:"La paginación no tiene fragmentación externa. La interna es lo que sobra en la última página, y la tabla tiene una entrada por cada página del proceso."},
+{n:13,q:"En relación con la planificación de procesos:",o:["La política de planificación por “Round-Robin” no genera problemas de inanición.","Cuando no existen procesos en la cola de preparados, la CPU permanece sin ejecutar instrucciones hasta que llegue algún proceso.","El algoritmo de colas con retroalimentación consiste en aumentar gradualmente la prioridad de los procesos que están en estado bloqueado.","La política de planificación basada en prioridades, tiene en cuenta el tiempo que los procesos han estado en la cola de “Preparados”."],c:0,
+s:"Round Robin da turno a todos los procesos, por eso no hay inanición.",
+th:"En la ficha de Round Robin de tu PDF: apropiativo mediante cuanto, trato justo y aplazamiento indefinido (inanición): NO."},
+{n:14,q:"¿Por qué NO tiene sentido que un proceso preparado pase a bloqueado?",o:["No tiene sentido porque si no está en ejecución no puede haber pedido ningún recurso.","Pues claro que puede pasar, por ejemplo si otro proceso de mayor prioridad necesita la CPU.","Puede ocurrir solamente si otro proceso le quita una página que va a necesitar en cuanto pase a ejecución.","No puede ser, porque el paso a bloqueado se produce cuando el proceso recibe una señal y éstas sólo se pueden recibir cuando el proceso está en ejecución."],c:0,
+s:"Se bloquea el proceso que se ejecuta y pide algo que no está listo (E/S, recurso). Uno preparado no ejecuta, así que no puede pedir nada.",
+th:"Transiciones: ejecución → bloqueado (espera un suceso), bloqueado → preparado (ocurre el suceso), preparado → ejecución (lo elige el planificador)."},
+{n:15,q:"Sea un volumen que está configurado en RAID 5 (paridad distribuida). Si falla uno de los discos, entonces:",o:["El volumen sigue en servicio, pero si se estropea otro disco entonces quedará fuera de servicio.","El volumen queda fuera de servicio.","El volumen sigue en servicio, pero no se pueden hacer escrituras.","El volumen sigue en servicio, pero todas las operaciones requieren acceder al disco de paridad."],c:0,
+s:"RAID 5 tolera 1 fallo: sigue funcionando reconstruyendo datos con la paridad, pero un segundo fallo lo deja fuera de servicio. La paridad está repartida, no hay un disco de paridad único.",
+th:"RAID 5: datos y paridad distribuidos entre los discos, capacidad útil de n − 1 discos y tolerancia a la pérdida de un disco."},
+{n:16,q:"Utilizando la planificación Round Robin, ¿qué cuanto de tiempo favorece a los procesos intensivos en E/S frente a los intensivos en consumo de CPU?",o:["un cuanto grande.","un cuanto pequeño.","un cuanto intermedio.","RR trata por igual sin favorecer especialmente a ninguno, con independencia del cuanto."],c:1,
+s:"Con cuanto pequeño los procesos de CPU se expulsan enseguida y los de E/S esperan poco en la cola. Con cuanto grande esperan mucho detrás de los de CPU.",
+th:"Los procesos limitados por E/S usan la CPU un momento antes de pedir E/S y los limitados por CPU gastan su cuanto entero. Un cuanto muy grande degenera en FIFO y empeora la respuesta."},
+{n:17,q:"La tabla de páginas de un determinado proceso indica que la página 3 tiene asociado el marco 7. El tamaño de página es de 2KB. ¿Cuál es la dirección física asociada a la dirección virtual 6927?",o:["3*2*1024+783 = 6927","7*2*1024+783 = 15119","7*2*1024+1265 = 15601","7*3*2*1024+783 = 602895"],c:1,
+s:"6927 ÷ 2048 = página 3 y desplazamiento 783. La página 3 está en el marco 7: 7 × 2048 + 783 = 15119.",
+th:"Dirección física = marco × tamaño de página + desplazamiento. Página y desplazamiento salen de dividir la dirección lógica entre el tamaño de página."},
+{n:18,q:"Un disco con 200 cilindros (0-199) tiene una cola de peticiones de acceso a los siguientes cilindros: 81, 142, 86, 172, 89, 145, 97, 170, 125. La cabeza se encuentra en el cilindro 100. ¿Cuántos cilindros recorrerán las cabezas si se usa el algoritmo de planificación del disco FCFS?",o:["200","508","427","527"],c:3,
+s:"FCFS sigue el orden de llegada: 19 + 61 + 56 + 86 + 83 + 56 + 48 + 73 + 45 = 527.",
+th:"FCFS atiende por orden de llegada sin optimizar el movimiento de la cabeza: es justo, pero recorre mucho."},
+{n:19,q:"Tenemos un sistema de memoria paginada con direcciones de memoria lógicas de 24 bits, direcciones físicas de 32 bits y el tamaño de páginas es de 1KB. El número de marcos de memoria principal es:",o:["2<sup>22</sup>","2<sup>32</sup>","2<sup>14</sup>","2<sup>8</sup>"],c:0,
+s:"Marcos = memoria física ÷ tamaño de página = 2<sup>32</sup> ÷ 2<sup>10</sup> = 2<sup>22</sup>. Los 24 bits lógicos no intervienen.",
+th:"Nº de marcos = tamaño de la memoria física ÷ tamaño de página. Nº de páginas lógicas = espacio lógico ÷ tamaño de página (aquí 2<sup>14</sup>)."},
+{n:20,q:"En un sistema de memoria virtual en el que se está aplicando el algoritmo de reemplazo LRU y 3 marcos para el proceso. Si se han referenciado las siguientes páginas 7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, el número de fallos de página es:",o:["6 fallos.","8 fallos.","11 fallos.","10 fallos."],c:3,
+s:"Con LRU y 3 marcos hay fallo en 7, 0, 1, 2, 3, 4, 2, 3, 0 y 1: son 10. Las referencias a 0, 0, 3, 2 y 2 son aciertos.",
+th:"LRU expulsa la página que lleva más tiempo sin usarse. Cada referencia a una página que no está en los marcos es un fallo de página."},
+{n:21,q:"Tenemos un sistema multiprogramado con una única CPU. ¿Cuál de las siguientes combinaciones NUNCA podría ser cierta?",o:["Podría ser un sistema concurrente y de tiempo real.","Podría ser un sistema de tiempo compartido y además de procesamiento paralelo.","Podría ser un sistema por lotes y además multiusuario.","Podría ser un sistema de tiempo compartido y multiusuario."],c:1,
+s:"Con una sola CPU no hay procesamiento paralelo real, solo concurrencia.",
+th:"Con una CPU se alterna entre procesos (concurrencia, tiempo compartido). El paralelismo real exige varias CPUs."},
+{n:22,q:"Supongamos un sistema de gestión de memoria con segmentación, con una memoria principal de 64KB. Un proceso emite las siguientes direcciones lógicas: (0,128) y (3,558). Tabla de segmentos (base, longitud): 0: (500, 300); 1: (1800, 600); 2: (100, 320); 3: (2364, 650); 4: (900, 45). ¿Cuáles serán las direcciones físicas correspondientes?",o:["628 y 2922.","500 y 2364.","800 y 3014.","800 y la dirección (0,900) no es válida."],c:0,
+s:"(0,128): 128 &lt; 300, luego 500 + 128 = 628. (3,558): 558 &lt; 650, luego 2364 + 558 = 2922.",
+th:"En segmentación, dirección física = base + desplazamiento, siempre que el desplazamiento sea menor que la longitud del segmento. Si no, es una dirección inválida."},
+{n:23,q:"El mapa de bits que registra el espacio libre en el disco ocupará:",o:["Tantos bits como bloques libres tenga el disco.","Tantos bits como bloques tenga el disco multiplicado por el número de registros que tenga cada bloque.","Tantos bits como bloques tenga el disco.","El mapa de bits sólo se usa para la gestión de la memoria principal."],c:2,
+s:"Hay 1 bit por cada bloque del disco (libre u ocupado), no solo por los libres.",
+th:"Gestión del espacio libre con mapa de bits: un bit por bloque, que indica si ese bloque está libre u ocupado."},
+{n:24,q:"En un sistema de gestión de memoria virtual NO se utiliza:",o:["Paginación.","Segmentación","Particiones dinámicas.","Segmentación Paginada."],c:2,
+s:"Las particiones dinámicas exigen el proceso entero y contiguo en memoria, y sin eso no hay memoria virtual.",
+th:"La memoria virtual permite tener solo parte del proceso en memoria: se apoya en paginación, segmentación o segmentación paginada."},
+{n:25,q:"La tabla de páginas indica que la página 2 tiene asociado el marco número 3. El tamaño de página es de 1KB. ¿Cuál es la dirección física para la dirección lógica 2374?",o:["1 x 1024 + 326.","3 x 1024 + 326.","3 + 326.","Se necesita saber el tamaño de marco."],c:1,
+s:"2374 ÷ 1024 = página 2 y desplazamiento 326. La página 2 está en el marco 3: 3 × 1024 + 326 = 3398.",
+th:"Dirección física = marco × tamaño + desplazamiento. El tamaño de marco es igual al de página."}
+];
+const $=s=>document.querySelector(s);
+let L=Q,i=0,sc=0,bad=[],done=false;
+function go(){
+ done=false;const q=L[i];
+ $("#app").innerHTML=`<div class="top"><span>Pregunta ${q.n}</span><span>${i+1} de ${L.length}</span></div><div class="bar"><i style="width:${i/L.length*100}%"></i></div><div class="card"><h2>${q.q}</h2>${q.x||""}<div>${q.o.map((t,k)=>`<button class="opt" data-k="${k}"><b>${"abcd"[k]})</b><span>${t}</span></button>`).join("")}</div><div id="fb"></div></div>`;
+ document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>pick(+b.dataset.k));
+ window.scrollTo(0,0);
+}
+function pick(k){
+ if(done)return;done=true;
+ const q=L[i],ok=k===q.c;
+ if(ok)sc++;else bad.push(q);
+ document.querySelectorAll(".opt").forEach((b,j)=>{b.disabled=true;if(j===q.c)b.classList.add("ok");else if(j===k)b.classList.add("ko")});
+ $("#fb").innerHTML=(ok?`<div class="res okr">¡Correcto!</div>`:`<div class="res kor"><b>Incorrecto.</b> La respuesta correcta es la <b>${"abcd"[q.c]})</b>.<p>${q.s}</p></div>`)+`<div class="th"><h3>Teoría para repasar</h3><p>${q.th}</p></div><button class="nx" id="nx">${i+1<L.length?"Siguiente pregunta":"Ver resultado"}</button>`;
+ $("#nx").onclick=()=>{i++;i<L.length?go():end()};
+ $("#nx").scrollIntoView({block:"nearest"});
+}
+function end(){
+ const t=L.length;
+ $("#app").innerHTML=`<div class="card"><h2>Resultado</h2><div class="score">${sc} de ${t}</div>${bad.length?`<p>Preguntas falladas y su respuesta correcta:</p><ul>${bad.map(q=>`<li>Pregunta ${q.n}: ${"abcd"[q.c]})</li>`).join("")}</ul><button class="btn" id="rf">Repasar las falladas</button><button class="btn sec" id="rs">Empezar de nuevo</button>`:`<p>¡Sin ningún fallo! Buen trabajo.</p><button class="btn" id="rs">Empezar de nuevo</button>`}</div>`;
+ if($("#rf"))$("#rf").onclick=()=>start(bad.slice());
+ $("#rs").onclick=()=>start(Q);
+}
+function start(l){L=l;i=0;sc=0;bad=[];go()}
+start(Q);
+</script>
+</body>
+</html>
