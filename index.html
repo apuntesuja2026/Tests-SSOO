@@ -6,7 +6,7 @@
     <title>Plataforma de Estudio Pro</title>
     <style>
         :root {
-            /* Paleta más moderna y profesional */
+            var(--primary): #0f172a;
             --primary: #0f172a;       /* Azul muy oscuro */
             --secondary: #3b82f6;     /* Azul vibrante */
             --accent: #eff6ff;        /* Fondo azul muy claro para tarjetas */
@@ -15,6 +15,11 @@
             --text-main: #1e293b;
             --text-muted: #64748b;
             --border: #e2e8f0;
+            
+            /* Colores específicos para asignaturas */
+            --color-ed: #8b5cf6;      /* Morado para Estructuras */
+            --color-so: #3b82f6;      /* Azul para Sistemas Operativos */
+            --color-gcpi: #10b981;    /* Verde para Gestión de Proyectos */
         }
 
         body {
@@ -26,7 +31,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Barra de navegación superior (Fija) */
+        /* Barra de navegación superior */
         .top-navbar {
             background-color: var(--primary);
             color: white;
@@ -75,7 +80,7 @@
             to { opacity: 1; transform: translateX(0); }
         }
 
-        /* Tipografía de cabeceras */
+        /* Tipografía */
         .header-title { font-size: 1.8rem; color: var(--primary); margin: 10px 0 5px 0; }
         .header-subtitle { font-size: 1rem; color: var(--text-muted); margin: 0 0 25px 0; }
 
@@ -86,7 +91,37 @@
             gap: 20px;
         }
 
-        /* Tarjetas de categorías grandes (Teoría/Prácticas) */
+        /* Tarjetas de Asignaturas (Más grandes y destacadas) */
+        .card-subject {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px 20px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-subject:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-subject .subject-icon {
+            font-size: 2.5rem;
+            margin-right: 20px;
+            background: var(--bg-body);
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Tarjetas de Categorías (Teoría/Prácticas) */
         .card-category {
             background: var(--card-bg);
             border-radius: 16px;
@@ -104,7 +139,6 @@
         .card-category:hover {
             transform: translateY(-5px);
             border-color: var(--secondary);
-            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15);
         }
 
         .icon-wrapper {
@@ -152,29 +186,6 @@
             display: inline-block;
             margin-bottom: 5px;
         }
-
-        /* Botones generales */
-        .btn-primary {
-            display: block;
-            width: 100%;
-            padding: 16px;
-            background-color: var(--secondary);
-            color: white;
-            text-align: center;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-top: 30px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
-            transition: background 0.2s;
-        }
-
-        .btn-primary:hover { background-color: #2563eb; }
-
-        /* Historial vacío */
-        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); background: var(--card-bg); border-radius: 12px; border: 1px dashed var(--border); }
     </style>
 </head>
 <body>
@@ -188,133 +199,167 @@
     <div class="container">
 
         <!-- ============================================== -->
-        <!-- PANTALLA 1: INICIO (HISTORIAL)                 -->
+        <!-- PANTALLA 1: SELECCIÓN DE ASIGNATURA (INICIO)   -->
         <!-- ============================================== -->
-        <div id="screen-home" class="screen active" data-parent="">
-            <h1 class="header-title">Hola de nuevo 👋</h1>
-            <p class="header-subtitle">Continúa donde lo dejaste</p>
-            
-            <div id="history-container" class="grid">
-                <!-- Se rellena por JavaScript -->
-            </div>
-
-            <button class="btn-primary" onclick="showScreen('screen-main-categories')">Abrir Material de Estudio</button>
-        </div>
-
-
-        <!-- ============================================== -->
-        <!-- PANTALLA 2: CATEGORÍAS PRINCIPALES             -->
-        <!-- ============================================== -->
-        <div id="screen-main-categories" class="screen" data-parent="screen-home">
-            <h1 class="header-title">Módulos</h1>
-            <p class="header-subtitle">¿Qué quieres repasar hoy?</p>
+        <div id="screen-subjects" class="screen active" data-parent="">
+            <h1 class="header-title">Tus Asignaturas</h1>
+            <p class="header-subtitle">Selecciona qué vas a estudiar hoy</p>
             
             <div class="grid">
-                <!-- Acceso a Teoría -->
-                <div class="card-category" onclick="showScreen('screen-teoria-menu')">
-                    <div class="icon-wrapper">📚</div>
-                    <h2 class="title" style="font-size:1.3rem;">Teoría</h2>
-                    <p class="desc">Temario completo y exámenes</p>
+                <!-- Estructuras de Datos -->
+                <div class="card-subject" style="border-left: 5px solid var(--color-ed);" onclick="showScreen('screen-ed-menu')">
+                    <div class="subject-icon">🗂️</div>
+                    <div>
+                        <h2 style="margin: 0; font-size: 1.2rem; color: var(--text-main);">Estructuras de Datos</h2>
+                        <p style="margin: 5px 0 0 0; color: var(--text-muted); font-size: 0.9rem;">Apuntes y Tests</p>
+                    </div>
                 </div>
 
-                <!-- Acceso a Prácticas -->
-                <div class="card-category" onclick="showScreen('screen-practicas-menu')">
-                    <div class="icon-wrapper">💻</div>
-                    <h2 class="title" style="font-size:1.3rem;">Prácticas</h2>
-                    <p class="desc">Tests de evaluación y guiones</p>
+                <!-- Sistemas Operativos -->
+                <div class="card-subject" style="border-left: 5px solid var(--color-so);" onclick="showScreen('screen-so-menu')">
+                    <div class="subject-icon">🖥️</div>
+                    <div>
+                        <h2 style="margin: 0; font-size: 1.2rem; color: var(--text-main);">Sistemas Operativos</h2>
+                        <p style="margin: 5px 0 0 0; color: var(--text-muted); font-size: 0.9rem;">Teoría, prácticas, exámenes...</p>
+                    </div>
+                </div>
+
+                <!-- Gestión y Control de Proyectos -->
+                <div class="card-subject" style="border-left: 5px solid var(--color-gcpi);" onclick="showScreen('screen-gcpi-menu')">
+                    <div class="subject-icon">📊</div>
+                    <div>
+                        <h2 style="margin: 0; font-size: 1.2rem; color: var(--text-main);">Gestión y Control de Proyectos</h2>
+                        <p style="margin: 5px 0 0 0; color: var(--text-muted); font-size: 0.9rem;">Apuntes y Tests</p>
+                    </div>
                 </div>
             </div>
         </div>
 
 
         <!-- ============================================== -->
-        <!-- PANTALLA 3: MENÚ TEORÍA                        -->
+        <!-- RAMA 1: ESTRUCTURAS DE DATOS (ED)              -->
         <!-- ============================================== -->
-        <div id="screen-teoria-menu" class="screen" data-parent="screen-main-categories">
-            <h1 class="header-title">Sección de Teoría</h1>
-            <p class="header-subtitle">Elige el tipo de documento</p>
+        <div id="screen-ed-menu" class="screen" data-parent="screen-subjects">
+            <h1 class="header-title">Estructuras de Datos</h1>
+            <p class="header-subtitle">¿Qué deseas consultar?</p>
             
             <div class="grid">
-                <div class="card-category" onclick="showScreen('screen-temario')">
+                <div class="card-category" onclick="showScreen('screen-ed-apuntes')">
                     <div class="icon-wrapper">📖</div>
-                    <h2 class="title">Temario</h2>
-                    <p class="desc">Apuntes oficiales en PDF</p>
+                    <h2 class="title">Apuntes</h2>
+                    <p class="desc">Documentos de teoría</p>
                 </div>
-
-                <div class="card-category" onclick="showScreen('screen-examenes')">
-                    <div class="icon-wrapper">📝</div>
-                    <h2 class="title">Exámenes</h2>
-                    <p class="desc">Exámenes de años anteriores</p>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- ============================================== -->
-        <!-- PANTALLA 4: MENÚ PRÁCTICAS                     -->
-        <!-- ============================================== -->
-        <div id="screen-practicas-menu" class="screen" data-parent="screen-main-categories">
-            <h1 class="header-title">Sección de Prácticas</h1>
-            <p class="header-subtitle">Pon a prueba tus conocimientos</p>
-            
-            <div class="grid">
-                <div class="card-category" onclick="showScreen('screen-tests')">
+                <div class="card-category" onclick="showScreen('screen-ed-tests')">
                     <div class="icon-wrapper">🎯</div>
                     <h2 class="title">Tests</h2>
-                    <p class="desc">Cuestionarios interactivos HTML</p>
+                    <p class="desc">Cuestionarios interactivos</p>
                 </div>
+            </div>
+        </div>
 
-                <div class="card-category" onclick="showScreen('screen-guiones')">
-                    <div class="icon-wrapper">📋</div>
-                    <h2 class="title">Guiones</h2>
-                    <p class="desc">Instrucciones de prácticas PDF</p>
+        <div id="screen-ed-apuntes" class="screen" data-parent="screen-ed-menu">
+            <h1 class="header-title">Apuntes - Estructuras de Datos</h1>
+            <div class="grid">
+                <!-- Añade aquí los apuntes de ED -->
+                <div class="card-item" onclick="openItem('tema1-ed.pdf')">
+                    <div class="item-icon">📄</div>
+                    <div class="item-info">
+                        <span class="tag">PDF</span>
+                        <h3 class="title">Tema 1 - Introducción ED</h3>
+                        <p class="desc">Conceptos básicos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-ed-tests" class="screen" data-parent="screen-ed-menu">
+            <h1 class="header-title">Tests - Estructuras de Datos</h1>
+            <div class="grid">
+                <!-- Añade aquí los tests de ED -->
+                <div class="card-item" onclick="openItem('test1-ed.html')">
+                    <div class="item-icon">💻</div>
+                    <div class="item-info">
+                        <span class="tag">HTML</span>
+                        <h3 class="title">Test Tema 1</h3>
+                        <p class="desc">Autoevaluación</p>
+                    </div>
                 </div>
             </div>
         </div>
 
 
         <!-- ============================================== -->
-        <!-- LISTAS DE CONTENIDO FINAL                      -->
+        <!-- RAMA 2: SISTEMAS OPERATIVOS (SO)               -->
         <!-- ============================================== -->
-
-        <!-- 5. LISTA DE TEMARIO -->
-        <div id="screen-temario" class="screen" data-parent="screen-teoria-menu">
-            <h1 class="header-title">Temario</h1>
-            <p class="header-subtitle">Apuntes de teoría</p>
+        <div id="screen-so-menu" class="screen" data-parent="screen-subjects">
+            <h1 class="header-title">Sistemas Operativos</h1>
+            <p class="header-subtitle">Selecciona el módulo</p>
+            
             <div class="grid">
-                <div class="card-item" onclick="openItem('Tema 1 - Introducción', 'tema1.pdf', '📖', 'Temario')">
-                    <div class="item-icon">📄</div>
-                    <div class="item-info">
-                        <span class="tag">PDF</span>
-                        <h3 class="title">Tema 1 - Introducción</h3>
-                        <p class="desc">Conceptos teóricos iniciales</p>
-                    </div>
+                <div class="card-category" onclick="showScreen('screen-so-teoria')">
+                    <div class="icon-wrapper">📚</div>
+                    <h2 class="title" style="font-size:1.3rem;">Teoría</h2>
+                    <p class="desc">Temario y exámenes</p>
+                </div>
+                <div class="card-category" onclick="showScreen('screen-so-practicas')">
+                    <div class="icon-wrapper">⚙️</div>
+                    <h2 class="title" style="font-size:1.3rem;">Prácticas</h2>
+                    <p class="desc">Tests y guiones</p>
                 </div>
             </div>
         </div>
 
-        <!-- 6. LISTA DE EXÁMENES -->
-        <div id="screen-examenes" class="screen" data-parent="screen-teoria-menu">
-            <h1 class="header-title">Exámenes</h1>
-            <p class="header-subtitle">Modelos de examen</p>
+        <!-- Submenús SO -->
+        <div id="screen-so-teoria" class="screen" data-parent="screen-so-menu">
+            <h1 class="header-title">Teoría - SO</h1>
             <div class="grid">
-                <div class="card-item" onclick="openItem('Examen 2023', 'examen2023.pdf', '📝', 'Examen')">
-                    <div class="item-icon">📄</div>
-                    <div class="item-info">
-                        <span class="tag">PDF</span>
-                        <h3 class="title">Examen Ordinaria 2023</h3>
-                        <p class="desc">Resuelto con soluciones</p>
-                    </div>
+                <div class="card-category" onclick="showScreen('screen-so-temario')">
+                    <div class="icon-wrapper">📖</div><h2 class="title">Temario</h2><p class="desc">Apuntes oficiales</p>
+                </div>
+                <div class="card-category" onclick="showScreen('screen-so-examenes')">
+                    <div class="icon-wrapper">📝</div><h2 class="title">Exámenes</h2><p class="desc">Modelos anteriores</p>
                 </div>
             </div>
         </div>
 
-        <!-- 7. LISTA DE TESTS -->
-        <div id="screen-tests" class="screen" data-parent="screen-practicas-menu">
-            <h1 class="header-title">Tests Interactivos</h1>
-            <p class="header-subtitle">Autoevaluación de prácticas</p>
+        <div id="screen-so-practicas" class="screen" data-parent="screen-so-menu">
+            <h1 class="header-title">Prácticas - SO</h1>
             <div class="grid">
-                <div class="card-item" onclick="openItem('Test Práctica 1', 'Tema1-InstalacionLinux (1).html', '🎯', 'Test')">
+                <div class="card-category" onclick="showScreen('screen-so-tests')">
+                    <div class="icon-wrapper">🎯</div><h2 class="title">Tests</h2><p class="desc">Evaluación interactiva</p>
+                </div>
+                <div class="card-category" onclick="showScreen('screen-so-guiones')">
+                    <div class="icon-wrapper">📋</div><h2 class="title">Guiones</h2><p class="desc">Instrucciones PDF</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Listas de contenido SO -->
+        <div id="screen-so-temario" class="screen" data-parent="screen-so-teoria">
+            <h1 class="header-title">Temario SO</h1>
+            <div class="grid">
+                <div class="card-item" onclick="openItem('tema1.pdf')">
+                    <div class="item-icon">📄</div>
+                    <div class="item-info"><span class="tag">PDF</span><h3 class="title">Resumen Tema 1</h3><p class="desc">Documento principal</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-so-examenes" class="screen" data-parent="screen-so-teoria">
+            <h1 class="header-title">Exámenes SO</h1>
+            <div class="grid">
+                <div class="card-item" onclick="openItem('examen2023.pdf')">
+                    <div class="item-icon">📄</div>
+                    <div class="item-info"><span class="tag">PDF</span><h3 class="title">Examen Ordinaria 2023</h3><p class="desc">Resuelto</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-so-tests" class="screen" data-parent="screen-so-practicas">
+            <h1 class="header-title">Tests de Prácticas SO</h1>
+            <div class="grid">
+                <!-- AQUI ESTAN TUS TESTS PREVIOS -->
+                <div class="card-item" onclick="openItem('Tema1-InstalacionLinux (1).html')">
                     <div class="item-icon">💻</div>
                     <div class="item-info">
                         <span class="tag">HTML</span>
@@ -323,7 +368,7 @@
                     </div>
                 </div>
 
-                <div class="card-item" onclick="openItem('Test Práctica 5', 'Tema5-GestionSoftware (1).html', '🎯', 'Test')">
+                <div class="card-item" onclick="openItem('Tema5-GestionSoftware (1).html')">
                     <div class="item-icon">💻</div>
                     <div class="item-info">
                         <span class="tag">HTML</span>
@@ -332,7 +377,7 @@
                     </div>
                 </div>
 
-                <div class="card-item" onclick="openItem('Test Práctica 6', 'Tema6-GestionUsuarios (1).html', '🎯', 'Test')">
+                <div class="card-item" onclick="openItem('Tema6-GestionUsuarios (1).html')">
                     <div class="item-icon">💻</div>
                     <div class="item-info">
                         <span class="tag">HTML</span>
@@ -343,17 +388,63 @@
             </div>
         </div>
 
-        <!-- 8. LISTA DE GUIONES DE PRÁCTICAS -->
-        <div id="screen-guiones" class="screen" data-parent="screen-practicas-menu">
-            <h1 class="header-title">Guiones de Prácticas</h1>
-            <p class="header-subtitle">Instrucciones paso a paso</p>
+        <div id="screen-so-guiones" class="screen" data-parent="screen-so-practicas">
+            <h1 class="header-title">Guiones SO</h1>
             <div class="grid">
-                <div class="card-item" onclick="openItem('Guion Práctica 1', 'guion_practica1.pdf', '📋', 'Guion')">
+                <div class="card-item" onclick="openItem('guion_practica1.pdf')">
+                    <div class="item-icon">📄</div>
+                    <div class="item-info"><span class="tag">PDF</span><h3 class="title">Guion Práctica 1</h3><p class="desc">Instalación</p></div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ============================================== -->
+        <!-- RAMA 3: GESTIÓN Y CONTROL DE PROYECTOS (GCPI)  -->
+        <!-- ============================================== -->
+        <div id="screen-gcpi-menu" class="screen" data-parent="screen-subjects">
+            <h1 class="header-title">Gestión y Control de Proyectos</h1>
+            <p class="header-subtitle">¿Qué deseas consultar?</p>
+            
+            <div class="grid">
+                <div class="card-category" onclick="showScreen('screen-gcpi-apuntes')">
+                    <div class="icon-wrapper">📖</div>
+                    <h2 class="title">Apuntes</h2>
+                    <p class="desc">Documentos de teoría</p>
+                </div>
+                <div class="card-category" onclick="showScreen('screen-gcpi-tests')">
+                    <div class="icon-wrapper">🎯</div>
+                    <h2 class="title">Tests</h2>
+                    <p class="desc">Cuestionarios interactivos</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-gcpi-apuntes" class="screen" data-parent="screen-gcpi-menu">
+            <h1 class="header-title">Apuntes - GCPI</h1>
+            <div class="grid">
+                <!-- Añade aquí los apuntes de GCPI -->
+                <div class="card-item" onclick="openItem('tema1-gcpi.pdf')">
                     <div class="item-icon">📄</div>
                     <div class="item-info">
                         <span class="tag">PDF</span>
-                        <h3 class="title">Guion Práctica 1</h3>
-                        <p class="desc">Pasos para instalación Linux</p>
+                        <h3 class="title">Tema 1 - Introducción Proyectos</h3>
+                        <p class="desc">Fundamentos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-gcpi-tests" class="screen" data-parent="screen-gcpi-menu">
+            <h1 class="header-title">Tests - GCPI</h1>
+            <div class="grid">
+                <!-- Añade aquí los tests de GCPI -->
+                <div class="card-item" onclick="openItem('test1-gcpi.html')">
+                    <div class="item-icon">💻</div>
+                    <div class="item-info">
+                        <span class="tag">HTML</span>
+                        <h3 class="title">Test Tema 1</h3>
+                        <p class="desc">Autoevaluación</p>
                     </div>
                 </div>
             </div>
@@ -361,17 +452,18 @@
 
     </div>
 
-    <!-- CÓDIGO JAVASCRIPT -->
+    <!-- CÓDIGO JAVASCRIPT (Simplificado sin historial) -->
     <script>
-        // Historial de navegación para el botón Volver
-        let currentScreen = 'screen-home';
+        // La pantalla inicial ahora es la de las asignaturas
+        let currentScreen = 'screen-subjects';
 
         function updateNavButton() {
             const btn = document.getElementById('nav-btn');
-            if (currentScreen === 'screen-home') {
-                btn.classList.add('hidden-btn'); // Ocultar en inicio
+            // Ocultar el botón volver si estamos en la selección de asignaturas
+            if (currentScreen === 'screen-subjects') {
+                btn.classList.add('hidden-btn');
             } else {
-                btn.classList.remove('hidden-btn'); // Mostrar en el resto
+                btn.classList.remove('hidden-btn');
             }
         }
 
@@ -391,47 +483,13 @@
             }
         }
 
-        // Función que guarda el clic en el historial y abre el archivo
-        function openItem(title, url, icon, type) {
-            let history = JSON.parse(localStorage.getItem('studyHistory')) || [];
-            history = history.filter(item => item.url !== url);
-            history.unshift({ title, url, icon, type });
-            if (history.length > 3) history.pop(); // Guarda los últimos 3
-            localStorage.setItem('studyHistory', JSON.stringify(history));
-            
+        // Función simplificada para abrir documentos (ya no guarda historial)
+        function openItem(url) {
             window.location.href = url;
         }
 
-        // Función que dibuja el historial en la pantalla de inicio
-        function renderHistory() {
-            const container = document.getElementById('history-container');
-            const history = JSON.parse(localStorage.getItem('studyHistory')) || [];
-
-            if (history.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div style="font-size: 3rem; margin-bottom: 10px;">🚀</div>
-                        <h3 style="margin:0">¡Todo listo para empezar!</h3>
-                        <p>Tus documentos y tests recientes aparecerán aquí.</p>
-                    </div>`;
-                return;
-            }
-
-            container.innerHTML = history.map(item => `
-                <div class="card-item" onclick="openItem('${item.title}', '${item.url}', '${item.icon}', '${item.type}')">
-                    <div class="item-icon">${item.icon}</div>
-                    <div class="item-info">
-                        <span class="tag">Reciente</span>
-                        <h3 class="title">${item.title}</h3>
-                        <p class="desc">${item.type}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Al cargar la página
+        // Al cargar la página actualizamos la interfaz
         window.onload = () => {
-            renderHistory();
             updateNavButton();
         };
     </script>
