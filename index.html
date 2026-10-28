@@ -322,14 +322,47 @@
             </div>
         </div>
 
+        <!-- PANTALLA ÚNICA DE PRÁCTICAS SO -->
         <div id="screen-so-practicas" class="screen" data-parent="screen-so-menu">
             <h1 class="header-title">Prácticas - SO</h1>
+            <p class="header-subtitle">Guiones y tests por sesión</p>
+            
+            <!-- PRÁCTICA 1 -->
+            <h2 style="font-size: 1.2rem; color: var(--primary); margin-top: 20px; margin-bottom: 15px; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Práctica 1: Instalación Linux</h2>
             <div class="grid">
-                <div class="card-category" onclick="showScreen('screen-so-tests')">
-                    <div class="icon-wrapper">🎯</div><h2 class="title">Tests</h2><p class="desc">Evaluación interactiva</p>
+                <div class="card-item" onclick="openItem('guion_practica1.pdf')">
+                    <div class="item-icon">📋</div>
+                    <div class="item-info"><span class="tag">PDF</span><h3 class="title">Guion P1</h3><p class="desc">Instrucciones de clase</p></div>
                 </div>
-                <div class="card-category" onclick="showScreen('screen-so-guiones')">
-                    <div class="icon-wrapper">📋</div><h2 class="title">Guiones</h2><p class="desc">Instrucciones PDF</p>
+                <div class="card-item" onclick="openItem('Tema1-InstalacionLinux (1).html')">
+                    <div class="item-icon">🎯</div>
+                    <div class="item-info"><span class="tag">HTML</span><h3 class="title">Test P1</h3><p class="desc">Autoevaluación</p></div>
+                </div>
+            </div>
+
+            <!-- PRÁCTICA 5 -->
+            <h2 style="font-size: 1.2rem; color: var(--primary); margin-top: 40px; margin-bottom: 15px; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Práctica 5: Gestión Software</h2>
+            <div class="grid">
+                <div class="card-item" onclick="openItem('guion_practica5.pdf')">
+                    <div class="item-icon">📋</div>
+                    <div class="item-info"><span class="tag">PDF</span><h3 class="title">Guion P5</h3><p class="desc">Instrucciones de clase</p></div>
+                </div>
+                <div class="card-item" onclick="openItem('Tema5-GestionSoftware (1).html')">
+                    <div class="item-icon">🎯</div>
+                    <div class="item-info"><span class="tag">HTML</span><h3 class="title">Test P5</h3><p class="desc">Autoevaluación</p></div>
+                </div>
+            </div>
+
+            <!-- PRÁCTICA 6 -->
+            <h2 style="font-size: 1.2rem; color: var(--primary); margin-top: 40px; margin-bottom: 15px; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Práctica 6: Gestión Usuarios</h2>
+            <div class="grid">
+                <div class="card-item" onclick="openItem('guion_practica6.pdf')">
+                    <div class="item-icon">📋</div>
+                    <div class="item-info"><span class="tag">PDF</span><h3 class="title">Guion P6</h3><p class="desc">Instrucciones de clase</p></div>
+                </div>
+                <div class="card-item" onclick="openItem('Tema6-GestionUsuarios (1).html')">
+                    <div class="item-icon">🎯</div>
+                    <div class="item-info"><span class="tag">HTML</span><h3 class="title">Test P6</h3><p class="desc">Autoevaluación</p></div>
                 </div>
             </div>
         </div>
@@ -375,48 +408,9 @@
             </div>
         </div>
 
-        <div id="screen-so-tests" class="screen" data-parent="screen-so-practicas">
-            <h1 class="header-title">Tests de Prácticas SO</h1>
-            <div class="grid">
-                <!-- AQUI ESTAN TUS TESTS PREVIOS -->
-                <div class="card-item" onclick="openItem('Tema1-InstalacionLinux (1).html')">
-                    <div class="item-icon">💻</div>
-                    <div class="item-info">
-                        <span class="tag">HTML</span>
-                        <h3 class="title">Test Práctica 1</h3>
-                        <p class="desc">Instalación Linux</p>
-                    </div>
-                </div>
+        
 
-                <div class="card-item" onclick="openItem('Tema5-GestionSoftware (1).html')">
-                    <div class="item-icon">💻</div>
-                    <div class="item-info">
-                        <span class="tag">HTML</span>
-                        <h3 class="title">Test Práctica 5</h3>
-                        <p class="desc">Gestión Software</p>
-                    </div>
-                </div>
-
-                <div class="card-item" onclick="openItem('Tema6-GestionUsuarios (1).html')">
-                    <div class="item-icon">💻</div>
-                    <div class="item-info">
-                        <span class="tag">HTML</span>
-                        <h3 class="title">Test Práctica 6</h3>
-                        <p class="desc">Gestión de Usuarios</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="screen-so-guiones" class="screen" data-parent="screen-so-practicas">
-            <h1 class="header-title">Guiones SO</h1>
-            <div class="grid">
-                <div class="card-item" onclick="openItem('guion_practica1.pdf')">
-                    <div class="item-icon">📄</div>
-                    <div class="item-info"><span class="tag">PDF</span><h3 class="title">Guion Práctica 1</h3><p class="desc">Instalación</p></div>
-                </div>
-            </div>
-        </div>
+       
 
 
         <!-- ============================================== -->
