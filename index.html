@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Plataforma de Estudio</title>
     <style>
-        /* Paleta de colores y variables */
         :root {
             --primary-color: #2563eb;
             --hover-color: #1d4ed8;
@@ -16,137 +15,245 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
             padding: 20px;
-            line-height: 1.6;
         }
 
         .container {
             max-width: 900px;
             margin: 0 auto;
-            padding: 20px 0;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 40px;
+        /* Sistema de pantallas */
+        .screen { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .screen.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        header h1 {
+        /* Cabeceras y botones de navegación */
+        .header-nav {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
             color: var(--primary-color);
-            font-size: 2.5rem;
-            margin: 0 0 10px 0;
-        }
-
-        header p {
-            color: var(--text-muted);
             font-size: 1.1rem;
-            margin: 0;
+            cursor: pointer;
+            padding: 0;
+            margin-right: 20px;
+            font-weight: 600;
         }
 
-        .section-title {
-            font-size: 1.5rem;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 10px;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            color: var(--text-main);
-        }
+        h1 { font-size: 2rem; color: var(--primary-color); margin: 0; }
+        h2 { font-size: 1.3rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 30px; }
 
-        /* Cuadrícula responsiva para las tarjetas */
+        /* Cuadrícula de tarjetas */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
         }
 
-        /* Diseño de las tarjetas */
-        .card {
+        /* Diseño de tarjetas y botones grandes */
+        .card, .btn-large {
             background: var(--card-bg);
             border-radius: 12px;
-            padding: 24px;
-            text-decoration: none;
-            color: inherit;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            cursor: pointer;
             border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .card:hover, .btn-large:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-large {
+            text-align: center;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            border-color: var(--primary-color);
-        }
-
-        .card-icon {
-            font-size: 2rem;
-            margin-bottom: 15px;
-        }
-
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin: 0 0 8px 0;
-            color: var(--primary-color);
-        }
-
-        .card-desc {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            margin: 0;
+        .icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .title { font-size: 1.2rem; font-weight: bold; margin: 0; color: var(--primary-color); }
+        .desc { font-size: 0.9rem; color: var(--text-muted); margin: 5px 0 0 0; }
+        
+        /* Botón de explorar */
+        .btn-primary {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-top: 30px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <header>
-            <h1>Portal de Estudio</h1>
-            <p>Tests interactivos y apuntes en PDF</p>
-        </header>
 
-        <!-- SECCIÓN DE TESTS -->
-        <h2 class="section-title">📝 Tests de Evaluación</h2>
-        <div class="grid">
+        <!-- PANTALLA 1: INICIO (HISTORIAL) -->
+        <div id="screen-home" class="screen active">
+            <div class="header-nav">
+                <h1>Hola de nuevo 👋</h1>
+            </div>
             
-            <a href="Tema1-InstalacionLinux (1).html" class="card">
-                <div class="card-icon">🎯</div>
-                <h3 class="card-title">Test Practica 1</h3>
-                <p class="card-desc">Conceptos básicos y fundamentos.</p>
-            </a>
+            <h2>Vistos recientemente</h2>
+            <div id="history-container" class="grid">
+                <!-- El historial se cargará aquí automáticamente -->
+            </div>
 
-            <a href="Tema5-GestionSoftware (1).html" class="card">
-                <div class="card-icon">🧠</div>
-                <h3 class="card-title">Test Practica 5</h3>
-                <p class="card-desc">Desarrollo y casos prácticos.</p>
-            </a>
-
+            <button class="btn-primary" onclick="showScreen('screen-menu')">Explorar Tests y Temas</button>
         </div>
 
-        <!-- SECCIÓN DE APUNTES (PDFs) -->
-        <h2 class="section-title">📚 Apuntes y Documentos</h2>
-        <div class="grid">
 
-            <!-- Asegúrate de subir el archivo .pdf a GitHub y poner el nombre exacto aquí -->
-            <a href="tema1-resumen.pdf" class="card">
-                <div class="card-icon">📄</div>
-                <h3 class="card-title">Resumen Tema 1</h3>
-                <p class="card-desc">Documento PDF con la teoría principal.</p>
-            </a>
+        <!-- PANTALLA 2: MENÚ DE ELECCIÓN -->
+        <div id="screen-menu" class="screen">
+            <div class="header-nav">
+                <button class="btn-back" onclick="showScreen('screen-home')">← Volver</button>
+                <h1>¿Qué quieres hacer?</h1>
+            </div>
+            
+            <div class="grid">
+                <button class="btn-large" onclick="showScreen('screen-tests')">
+                    <span class="icon">📝</span>
+                    <span class="title">Hacer un Test</span>
+                    <span class="desc">Evalúa tus conocimientos</span>
+                </button>
 
-            <a href="esquemas.pdf" class="card">
-                <div class="card-icon">📊</div>
-                <h3 class="card-title">Esquemas Generales</h3>
-                <p class="card-desc">Mapas conceptuales en PDF.</p>
-            </a>
-
+                <button class="btn-large" onclick="showScreen('screen-temas')">
+                    <span class="icon">📚</span>
+                    <span class="title">Leer Apuntes</span>
+                    <span class="desc">Repasa la teoría en PDF</span>
+                </button>
+            </div>
         </div>
+
+
+        <!-- PANTALLA 3: LISTA DE TESTS -->
+        <div id="screen-tests" class="screen">
+            <div class="header-nav">
+                <button class="btn-back" onclick="showScreen('screen-menu')">← Volver</button>
+                <h1>Tus Tests</h1>
+            </div>
+            
+            <div class="grid">
+                <!-- Cambia el nombre y URL por los tuyos reales -->
+                <div class="card" onclick="openItem('Test Tema 1', 'Tema1-InstalacionLinux (1).html', '🎯', 'Test')">
+                    <div class="icon">🎯</div>
+                    <p class="title">Instalación Linux</p>
+                </div>
+
+                <div class="card" onclick="openItem('Test Practica 5', 'Tema5-GestionSoftware (1).html', '🧠', 'Test')">
+                    <div class="icon">🧠</div>
+                    <p class="title">Test Práctica 5</p>
+                    <p class="desc">Gestión Software</p>
+                </div>
+
+                <div class="card" onclick="openItem('Test Practica 6', 'Tema6-GestionUsuarios (1).html', '🎯', 'Test')">
+                    <div class="icon">🎯</div>
+                    <p class="title">Gestión de Usuarios</p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- PANTALLA 4: LISTA DE TEMAS (PDF) -->
+        <div id="screen-temas" class="screen">
+            <div class="header-nav">
+                <button class="btn-back" onclick="showScreen('screen-menu')">← Volver</button>
+                <h1>Tus Apuntes</h1>
+            </div>
+            
+            <div class="grid">
+                <!-- Cambia el nombre y URL por los tuyos reales -->
+                <div class="card" onclick="openItem('Resumen Tema 1', 'tema1.pdf', '📄', 'Tema')">
+                    <div class="icon">📄</div>
+                    <p class="title">Resumen Tema 1</p>
+                    <p class="desc">Documento PDF principal</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
+    <!-- CÓDIGO JAVASCRIPT QUE HACE FUNCIONAR TODO -->
+    <script>
+        // Función para cambiar entre pantallas
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        // Función que guarda el clic en el historial y abre el archivo
+        function openItem(title, url, icon, type) {
+            // 1. Cargar el historial que ya exista en la memoria del móvil (o crear uno vacío)
+            let history = JSON.parse(localStorage.getItem('studyHistory')) || [];
+            
+            // 2. Quitar el elemento si ya estaba (para ponerlo el primero y no duplicar)
+            history = history.filter(item => item.url !== url);
+            
+            // 3. Añadir el elemento que acabas de tocar al principio de la lista
+            history.unshift({ title, url, icon, type });
+            
+            // 4. Quedarnos solo con los 3 más recientes
+            if (history.length > 3) history.pop();
+            
+            // 5. Guardar de nuevo en el móvil
+            localStorage.setItem('studyHistory', JSON.stringify(history));
+            
+            // 6. Finalmente, abrir el test o PDF
+            window.location.href = url;
+        }
+
+        // Función que dibuja el historial en la pantalla de inicio
+        function renderHistory() {
+            const container = document.getElementById('history-container');
+            const history = JSON.parse(localStorage.getItem('studyHistory')) || [];
+
+            if (history.length === 0) {
+                container.innerHTML = '<p style="color: #64748b;">Aún no has abierto ningún test o tema. ¡Explora el menú para empezar!</p>';
+                return;
+            }
+
+            container.innerHTML = history.map(item => `
+                <div class="card" onclick="openItem('${item.title}', '${item.url}', '${item.icon}', '${item.type}')">
+                    <div class="icon">${item.icon}</div>
+                    <p class="title">${item.title}</p>
+                    <p class="desc">Último ${item.type} abierto</p>
+                </div>
+            `).join('');
+        }
+
+        // Al cargar la página, dibujar el historial
+        window.onload = renderHistory;
+    </script>
 </body>
 </html>
