@@ -3,21 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Tests</title>
+    <title>Mi Plataforma de Estudio</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-        a { display: block; margin: 15px; padding: 15px; background: #007bff; color: white; text-decoration: none; border-radius: 8px; font-size: 18px; }
-        a:hover { background: #0056b3; }
-        .menu { max-width: 300px; margin: 0 auto; }
+        /* Paleta de colores y variables */
+        :root {
+            --primary-color: #2563eb;
+            --hover-color: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+
+        /* Cuadrícula responsiva para las tarjetas */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        /* Diseño de las tarjetas */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+            color: var(--primary-color);
+        }
+
+        .card-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
     </style>
 </head>
 <body>
-    <h1>Elige un Test</h1>
-    <div class="menu">
-        <!-- Cambia el href por el nombre exacto de tus archivos HTML -->
-        <a href="Tema1-InstalacionLinux (1).html">Practica1</a>
-        <a href="Tema5-GestionSoftware (1).html">Practica5</a>
-        <a href="Tema6-GestionUsuarios (1).html">Practica6</a>
+
+    <div class="container">
+        <header>
+            <h1>Portal de Estudio</h1>
+            <p>Tests interactivos y apuntes en PDF</p>
+        </header>
+
+        <!-- SECCIÓN DE TESTS -->
+        <h2 class="section-title">📝 Tests de Evaluación</h2>
+        <div class="grid">
+            
+            <a href="test1.html" class="card">
+                <div class="card-icon">🎯</div>
+                <h3 class="card-title">Test Tema 1</h3>
+                <p class="card-desc">Conceptos básicos y fundamentos.</p>
+            </a>
+
+            <a href="test2.html" class="card">
+                <div class="card-icon">🧠</div>
+                <h3 class="card-title">Test Tema 2</h3>
+                <p class="card-desc">Desarrollo y casos prácticos.</p>
+            </a>
+
+        </div>
+
+        <!-- SECCIÓN DE APUNTES (PDFs) -->
+        <h2 class="section-title">📚 Apuntes y Documentos</h2>
+        <div class="grid">
+
+            <!-- Asegúrate de subir el archivo .pdf a GitHub y poner el nombre exacto aquí -->
+            <a href="tema1-resumen.pdf" class="card">
+                <div class="card-icon">📄</div>
+                <h3 class="card-title">Resumen Tema 1</h3>
+                <p class="card-desc">Documento PDF con la teoría principal.</p>
+            </a>
+
+            <a href="esquemas.pdf" class="card">
+                <div class="card-icon">📊</div>
+                <h3 class="card-title">Esquemas Generales</h3>
+                <p class="card-desc">Mapas conceptuales en PDF.</p>
+            </a>
+
+        </div>
     </div>
+
 </body>
 </html>
