@@ -232,6 +232,15 @@
                         <p style="margin: 5px 0 0 0; color: var(--text-muted); font-size: 0.9rem;">Apuntes y Tests</p>
                     </div>
                 </div>
+
+                <!-- Metaheurísticas -->
+                <div class="card-subject" style="border-left: 5px solid var(--color-so);" onclick="showScreen('screen-meta-menu')">
+                    <div class="subject-icon">🖥️</div>
+                    <div>
+                        <h2 style="margin: 0; font-size: 1.2rem; color: var(--text-main);">Metaheurísticas</h2>
+                        <p style="margin: 5px 0 0 0; color: var(--text-muted); font-size: 0.9rem;">Teoría, prácticas, exámenes...</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -480,6 +489,57 @@
             </div>
         </div>
 
+        <!-- ============================================== -->
+        <!-- RAMA 4: METAHEURÍSTICAS  -->
+        <!-- ============================================== -->
+        <div id="screen-gcpi-menu" class="screen" data-parent="screen-subjects">
+            <h1 class="header-title">Metaheurísticas</h1>
+            <p class="header-subtitle">¿Qué deseas consultar?</p>
+            
+            <div class="grid">
+                <div class="card-category" onclick="showScreen('screen-gcpi-apuntes')">
+                    <div class="icon-wrapper">📖</div>
+                    <h2 class="title">Apuntes</h2>
+                    <p class="desc">Documentos de teoría</p>
+                </div>
+                <div class="card-category" onclick="showScreen('screen-gcpi-tests')">
+                    <div class="icon-wrapper">🎯</div>
+                    <h2 class="title">Tests</h2>
+                    <p class="desc">Cuestionarios interactivos</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-gcpi-apuntes" class="screen" data-parent="screen-gcpi-menu">
+            <h1 class="header-title">Apuntes - Metaheurísticas</h1>
+            <div class="grid">
+                <!-- Añade aquí los apuntes de GCPI -->
+                <div class="card-item" onclick="openItem('tema1-gcpi.pdf')">
+                    <div class="item-icon">📄</div>
+                    <div class="item-info">
+                        <span class="tag">PDF</span>
+                        <h3 class="title">Tema 1</h3>
+                        <p class="desc">Fundamentos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-gcpi-tests" class="screen" data-parent="screen-gcpi-menu">
+            <h1 class="header-title">Tests - Metaheurísticas</h1>
+            <div class="grid">
+                <!-- Añade aquí los tests de GCPI -->
+                <div class="card-item" onclick="openItem('TestMetaheurísticas.html')">
+                    <div class="item-icon">💻</div>
+                    <div class="item-info">
+                        <span class="tag">TEST</span>
+                        <h3 class="title">Test Preguntas de Examen</h3>
+                        <p class="desc">Autoevaluación</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 
     <!-- CÓDIGO JAVASCRIPT (Simplificado sin historial) -->
