@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Repaso: Metaheurísticas</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#1d2330;--card:#fff;--mut:#5b6475;--bd:#dde1e8;--acc:#2f5fd0;--ok:#157a3d;--okbg:#e4f5ea;--err:#b3261e;--errbg:#fdeceb;--code:#eef0f4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12151c;--fg:#e6e9f0;--card:#1b202b;--mut:#9aa3b5;--bd:#2c3342;--acc:#7da2ff;--ok:#6fd694;--okbg:#17321f;--err:#ff8a82;--errbg:#3a1b19;--code:#262c3a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12151c;--fg:#e6e9f0;--card:#1b202b;--mut:#9aa3b5;--bd:#2c3342;--acc:#7da2ff;--ok:#6fd694;--okbg:#17321f;--err:#ff8a82;--errbg:#3a1b19;--code:#262c3a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:1.4rem;margin:.3em 0}h3{margin:1.2em 0 .3em;color:var(--acc)}
+.sub{color:var(--mut);margin:0 0 12px}
+.tabs{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap;align-items:center}
+.tabs button,.tabs select{border:1px solid var(--bd);background:var(--card);color:var(--fg);padding:8px 14px;border-radius:10px;font:inherit;cursor:pointer}
+.tabs button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+#flt{margin-left:auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin:14px 0}
+.hd{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.n{background:var(--acc);color:#fff;border-radius:50%;min-width:28px;height:28px;display:grid;place-items:center;font-size:.85rem}
+.tag{font-size:.75rem;color:var(--mut);border:1px solid var(--bd);border-radius:8px;padding:1px 7px}
+.opt{display:inline-block;width:49%;text-align:center;margin:6px 0;border:1px solid var(--bd);background:var(--bg);color:var(--fg);border-radius:10px;padding:9px 12px;font:inherit;cursor:pointer}
+.opt.good{background:var(--okbg);border-color:var(--ok)}.opt.wrong{background:var(--errbg);border-color:var(--err)}
+.sol{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--code)}
+.sol p{margin:.4em 0}.ok{color:var(--ok)}
+code{background:var(--code);padding:1px 5px;border-radius:5px;font-size:.92em}
+ul{padding-left:1.3em;margin:.3em 0}
+section[hidden],.sol[hidden],.card[hidden]{display:none}
+</style></head><body><main>
+<h1>🧬 Repaso: Metaheurísticas</h1>
+<p class="sub">Preguntas V/F de examen resueltas, explicadas en sencillo · «pág.» = página del PDF de teoría</p>
+<div class="tabs"><button class="on" data-tab="q">Preguntas</button><button data-tab="t">Teoría clave</button>
+<select id="flt"></select></div>
+<section id="q"><div id="list"></div></section>
+<section id="t" hidden>
+<h3>1. Introducción</h3><ul><li>Métodos exactos: óptimo pero tiempo exponencial. Aproximados (heurísticas, metaheurísticas): buena solución en tiempo razonable, <b>sin garantía de óptimo</b>.</li>
+<li><b>Candidata</b>: no tiene por qué cumplir restricciones. <b>Solución</b>: candidata que las cumple todas.</li>
+<li>Equilibrio <b>exploración</b> (zonas nuevas) / <b>explotación</b> (profundizar). El óptimo global también es óptimo local.</li>
+<li>Elementos clave: <b>solución</b> (representación), <b>entorno</b>, <b>movimiento</b>, <b>evaluación</b> (factibilidad + objetivo).</li></ul>
+<h3>2. Búsqueda local</h3><ul><li>Vecinas = <b>todas</b> las soluciones del entorno. Del <b>mejor</b>: mira todo el entorno; del <b>primer mejor</b>: se queda con el primero que mejora. Acaban en óptimos locales.</li>
+<li>Búsqueda aleatoria: P(óptimo en 1 iteración) = 1/m.</li></ul>
+<h3>3. Enfriamiento simulado</h3><ul><li>Acepta peores con probabilidad <code>exp(−δ/T)</code>: sube con T y baja con δ. Explora al principio, explota al final. T0 depende del problema.</li></ul>
+<h3>4. Búsqueda tabú</h3><ul><li>Acepta el mejor vecino del entorno restringido (aunque empeore). <b>Corto plazo</b>: lista tabú, guía desde el inicio. <b>Largo plazo</b>: guía a posteriori; intensifica (regiones buenas), diversifica (regiones nuevas) u oscila.</li>
+<li>4 dimensiones: recencia, frecuencia, calidad, influencia. Es de trayectorias, no constructiva.</li></ul>
+<h3>5. Multiarranque</h3><ul><li>Etapa 1: solución inicial. Etapa 2: búsqueda local (simple o sofisticada). GRASP: greedy aleatorizado + LRC (diversidad). ILS: perturba el óptimo local. VNS: cambia de entorno.</li></ul>
+<h3>6. Poblaciones y 7. Evolutivos</h3><ul><li>P-metaheurísticas: pueden partir de soluciones parciales y pueden no usar memoria. Más exploradoras que las de trayectorias.</li>
+<li>Ruleta: tradicional, presión selectiva muy alta. Torneo: a mayor k, más presión. Generacional: elitismo para no perder al mejor. EC: altas prestaciones a <b>bajo</b> coste, sin garantía de óptimo.</li></ul>
+<h3>8. Programación genética</h3><ul><li>Árboles; inicialización completa, creciente o combinada; mutación de subárbol, terminal, nodos o constantes. AG (1975) → PG (1989) → ED (1997).</li></ul>
+<h3>9. Evolución diferencial</h3><ul><li>Vectores de reales: <code>v = x_r0 + F·(x_r1 − x_r2)</code>, cruce discreto, el hijo solo sustituye a su padre si mejora. JADE: current-to-pbest (uno de los p mejores) y adapta F y CR. SaDE: adapta la estrategia.</li></ul>
+<h3>10. Restricciones y multiobjetivo</h3><ul><li>Espacio factible: rechazo, reparación, preservación. Espacio completo: <b>penalización</b> <code>f + w·P</code>.</li>
+<li>Multiobjetivo: a domina a b si es ≥ en todo y &gt; en algo. Frente de Pareto = soluciones no dominadas.</li></ul>
+<p class="sub">Fuera por no verse aún: hormigas (ACO), PSO, meméticos, híbridas, paralelas, Map-Reduce y No Free Lunch.</p>
+</section></main>
+<script>
+var T=["Introducción","Búsqueda local","Enfriamiento simulado","Búsqueda tabú","Multiarranque","Poblaciones","Algoritmos evolutivos","Prog. genética","Evolución diferencial","Restricciones"];
+var Q=[
+[0,"Una solución candidata a un problema puede verificar todas las restricciones.",1,"La candidata no tiene por qué cumplirlas, pero puede. Si las cumple todas, ya es una solución.","pág. 28"],
+[0,"La exploración e intensificación se centran en explorar nuevos espacios de búsqueda no analizados hasta el momento.",0,"Eso es solo la exploración. Intensificar es profundizar en zonas prometedoras.","pág. 46"],
+[0,"Elementos clave de una metaheurística: representación de la solución, soluciones cercanas, transformación de la solución actual en otra, factibilidad de la solución y función objetivo.",1,"Son los 4 bloques: solución, entorno, movimiento y evaluación.","pág. 36"],
+[0,"Elementos clave de una metaheurística: representación de la solución, soluciones cercanas, transformación de la solución actual en otra, la generación de la solución y la función objetivo.",0,"Cambia una palabra: es la factibilidad, no la generación.","pág. 36"],
+[0,"Elementos básicos de cualquier metaheurística: representación de la solución, reproducción de soluciones en el entorno y evaluación de la solución.",0,"La «reproducción» no es un elemento básico; lo son solución, entorno, movimiento y evaluación.","pág. 36"],
+[0,"Un óptimo global puede no ser local.",0,"El óptimo global también es óptimo local.","pág. 81"],
+[0,"Los tiempos de las metaheurísticas dependen exclusivamente de la técnica empleada.",0,"También influyen la implementación, el lenguaje, el SO, la instancia y los parámetros.","pág. 90"],
+[0,"Los tiempos de las metaheurísticas dependen de algún modo de la técnica empleada.",1,"La técnica influye, pero no es lo único.","pág. 90"],
+[0,"Un algoritmo es constructivo cuando la solución se construye en un único paso.",0,"Se construye paso a paso, añadiendo componentes a una solución parcial.","pág. 33"],
+[0,"Las metaheurísticas se centran principalmente en el campo de la Inteligencia Computacional.",0,"Lo más probable: están en la intersección de IA, IC y teoría de algoritmos. Confírmalo con la profesora.","pág. 5"],
+[0,"El tiempo es un factor para medir el equilibrio entre eficiencia y eficacia de las metaheurísticas de trayectorias y poblaciones.",1,"Se evalúa la calidad de la solución y un tiempo razonable.","págs. 83-85"],
+[0,"El único objetivo de las metaheurísticas paralelas es reducir el tiempo de ejecución.",0,"Hay tres: menos tiempo con la misma calidad, más calidad sin más tiempo y más calidad por efecto sinérgico.","pág. 94"],
+[0,"En un problema combinatorio con 5 variables y 5 valores por variable, el algoritmo evolutivo es la opción más adecuada.",0,"Son solo 5⁵ = 3125 soluciones: se enumeran o se usa un método exacto.","págs. 13, 25"],
+[0,"Los algoritmos evolutivos son las mejores técnicas de todas las vistas para resolver problemas combinatorios.",0,"No hay técnica universalmente mejor; depende del problema.","págs. 78, 106"],
+[1,"Solo a parte de las soluciones del entorno de la solución actual, delimitado por un operador de generación, se denominan vecinas.",0,"Son vecinas todas las del entorno.","pág. 115"],
+[1,"Una búsqueda local tiende hacia óptimos locales que pueden estar muy alejados del óptimo global.",1,"Es su gran problema.","pág. 172"],
+[1,"El término local se refiere al uso de estructuras de entorno que reflejan la proximidad o vecindad entre soluciones.",1,"Local = cercanía entre soluciones.","pág. 114"],
+[1,"En una búsqueda aleatoria, la probabilidad de obtener el óptimo en una sola iteración es 1/m, con m el tamaño del espacio de búsqueda.",1,"Con óptimo único, cada solución tiene probabilidad 1/m.","pág. 133"],
+[1,"Las búsquedas del mejor y del primer mejor deben devolver, por regla general, resultados distintos con la misma semilla.",1,"Misma solución inicial pero distinta trayectoria: suelen acabar en óptimos locales distintos.","págs. 142-159"],
+[1,"La principal diferencia entre la búsqueda del mejor y la del primer mejor está en la transformación de la solución actual en otra.",1,"Representación, entorno y objetivo son iguales; cambia cómo se elige el vecino (el movimiento).","pág. 165"],
+[1,"En una búsqueda local del mejor (o del primer mejor) se deben incorporar incremento y evaporación de feromonas para mejorar la exploración.",0,"Las feromonas son de las hormigas; la búsqueda local básica no usa memoria.","pág. 142"],
+[2,"El enfriamiento simulado intenta una explotación al comienzo de la búsqueda y exploración en las etapas finales.",0,"Al revés: con T alta explora al principio y con T baja explota al final.","pág. 189"],
+[2,"El enfriamiento simulado es una metaheurística de trayectorias que persigue exploración al comienzo y explotación al final.",1,"Justo ese es su comportamiento.","pág. 189"],
+[2,"El enfriamiento simulado aplica una filosofía de diversificar al principio y explotar al final.",1,"Diversificar = explorar.","pág. 189"],
+[2,"En el enfriamiento simulado, a mayor temperatura menor probabilidad de aceptar soluciones peores.",0,"P = exp(−δ/T) sube con T: más temperatura, más se acepta.","pág. 196"],
+[2,"En el enfriamiento simulado, cuanto mayor sea la diferencia de calidad entre la solución actual y la candidata, mayor es la probabilidad de aceptar la peor.",0,"Con δ grande, exp(−δ/T) cae.","pág. 196"],
+[2,"En el enfriamiento simulado, cuanto menor sea la diferencia de calidad entre la solución actual y la candidata, mayor es la probabilidad de aceptar la peor.",1,"Con δ pequeño, exp(−δ/T) se acerca a 1.","pág. 196"],
+[3,"El algoritmo de búsqueda tabú permite movimientos de empeoramiento.",1,"Acepta el mejor vecino del entorno restringido aunque sea peor.","pág. 233"],
+[3,"La memoria a largo plazo de la búsqueda tabú solo permite intensificar la búsqueda después de un estancamiento.",0,"Permite intensificar y diversificar (y alternarlas).","págs. 249-257"],
+[3,"Las estructuras de memoria de la búsqueda tabú operan solo en las dimensiones de calidad y frecuencia.",0,"Son cuatro: recencia, frecuencia, calidad e influencia.","pág. 229"],
+[3,"La mejor estrategia con la memoria a largo plazo ante un estancamiento es la oscilación estratégica.",0,"No hay una mejor universal: intensificar, diversificar u oscilar son alternativas.","pág. 257"],
+[3,"Al igual que la temperatura del enfriamiento simulado, la tenencia tabú debe inicializarse con un valor relacionado con el problema.",1,"T0 depende del coste inicial; la tenencia, del número de atributos (p. ej. entre n/3 y 3n).","págs. 205, 247"],
+[3,"La memoria de corto plazo se utiliza para guiar la búsqueda a posteriori, después de una primera etapa.",0,"Eso es la de largo plazo. La de corto plazo guía desde el principio.","págs. 225-226"],
+[3,"Las estrategias de diversificación se basan en regresar a regiones atractivas ya exploradas para buscar más extensamente.",0,"Eso es intensificar. Diversificar es ir a zonas no exploradas.","págs. 250, 254"],
+[3,"El diseño de la memoria a largo plazo de la búsqueda tabú parte normalmente de la representación de la solución.",1,"Vector, matriz M[i,k] o M[i,j] según sea binaria, entera o permutación.","pág. 258"],
+[3,"El diseño de la memoria a corto plazo de la búsqueda tabú parte normalmente de la representación de la solución.",1,"Los atributos y movimientos tabú dependen de la representación y del operador.","pág. 246"],
+[3,"Los sistemas de hormigas son métodos constructivos como la búsqueda tabú.",0,"La tabú es de trayectorias (modifica una solución completa), no constructiva.","pág. 233"],
+[4,"En una búsqueda multiarranque no se pueden utilizar métodos de trayectoria sofisticados en la etapa 2.",0,"Se puede usar búsqueda local básica o algo más sofisticado.","pág. 293"],
+[4,"La búsqueda multiarranque tiene dos etapas: 1) obtención de una solución optimizada y 2) trayectoria muy sofisticada.",0,"Etapa 1: generar solución inicial. Etapa 2: búsqueda local.","pág. 289"],
+[4,"La búsqueda multiarranque se basa exclusivamente en un proceso de trayectoria muy sofisticado.",0,"Combina generar soluciones iniciales y búsqueda local, que puede ser simple.","pág. 289"],
+[4,"El criterio de parada en las búsquedas multiarranque se limita a un número fijo de iteraciones.",0,"Va de criterios simples a otros que analizan la evolución.","pág. 294"],
+[4,"GRASP utiliza una lista restringida de candidatos para aportar diversidad.",1,"La LRC añade aleatoriedad a la construcción greedy.","pág. 301"],
+[4,"GRASP y los sistemas de colonias de hormigas se pueden clasificar como algoritmos constructivos.",1,"Ambos construyen la solución añadiendo componentes.","pág. 297"],
+[4,"Los sistemas de hormigas se asemejan a las búsquedas multiarranque.",1,"La pág. 297 los incluye entre los modelos multiarranque constructivos.","pág. 297"],
+[4,"Los OCH con búsqueda local son un algoritmo multiarranque.",1,"Mismo motivo que la anterior.","pág. 297"],
+[4,"Los algoritmos meméticos son técnicas multiarranque.",1,"Aparecen como hibridaciones dentro de los modelos multiarranque.","pág. 297"],
+[5,"Las P-metaheurísticas siempre comienzan con una población de soluciones completas.",0,"Algunas parten de soluciones parciales o vacías.","pág. 327"],
+[5,"Las P-metaheurísticas siempre utilizan memoria de búsqueda.",0,"Pueden basarse solo en la población actual.","pág. 328"],
+[5,"Las metaheurísticas de colonias de hormigas pueden considerarse basadas en poblaciones.",1,"Son P-metaheurísticas de tipo pizarra (memoria compartida).","págs. 326, 330"],
+[6,"Ventajas de la computación evolutiva: amplia aplicabilidad, alto coste en desarrollo y posibilidad de ejecutar interactivamente.",0,"Su ventaja es el bajo coste de desarrollo.","pág. 419"],
+[6,"Las metaheurísticas basadas en computación evolutiva no garantizan la solución óptima en un tiempo finito.",1,"Son métodos aproximados.","pág. 25"],
+[6,"Las metaheurísticas basadas en computación evolutiva siempre obtienen la solución óptima en un tiempo finito.",0,"No hay esa garantía.","pág. 25"],
+[6,"La selección por ruleta es un algoritmo novedoso con baja presión selectiva.",0,"Es el tradicional y tiene presión selectiva muy alta.","pág. 375"],
+[6,"En los algoritmos evolutivos generacionales se incorpora el elitismo para mejorar la diversidad de soluciones.",0,"El elitismo evita perder al mejor individuo; no aporta diversidad.","pág. 385"],
+[6,"En los algoritmos evolutivos estacionarios se incorpora el elitismo del mejor individuo para mejorar la diversidad de soluciones.",0,"El elitismo es del modelo generacional y no mejora la diversidad. En estacionarios se usa torneo restringido o crowding.","pág. 386"],
+[6,"Los algoritmos de evolución generacional se comportan bien cuando todas las variables son reales.",0,"Generacional es un modelo de reemplazo; quien destaca en reales es la evolución diferencial.","pág. 360"],
+[7,"En programación genética se emplea siempre una inicialización completa y/o creciente.",0,"También existe la combinada (mitad y mitad) y la aleatoria.","págs. 452-455"],
+[7,"La mutación en programación genética solo puede reemplazar subárboles completos.",0,"También hay expansión de terminal, permutación de nodos y mutación de constantes.","pág. 464"],
+[7,"La programación genética es una generalización de los algoritmos evolutivos.",0,"Es un paradigma dentro de ellos, no una generalización.","pág. 358"],
+[7,"La programación genética es una generalización de la evolución diferencial.",0,"Evolucionan cosas distintas: árboles frente a vectores de reales.","pág. 358"],
+[7,"La programación genética aparece posteriormente a los algoritmos genéticos como un caso particular de los mismos.",1,"AG (Holland, 1975) y PG (Koza, 1989): un AG con representación en árbol.","pág. 358"],
+[7,"La programación genética aparece posteriormente a la evolución diferencial como un caso particular de ella.",0,"La PG (1989) es anterior a la ED (1997).","págs. 358, 540"],
+[8,"Los algoritmos de evolución diferencial se utilizan mucho en optimización continua.",1,"Es uno de los enfoques con más éxito en continuo.","pág. 491"],
+[8,"Los algoritmos de evolución diferencial se comportan bien cuando el dominio de todas las variables son los reales.",1,"Sus individuos son vectores de reales.","pág. 491"],
+[8,"El operador ternario de JADE permite obtener nuevos individuos seleccionando, entre otros, uno de los p mejores del momento anterior.",1,"Es current-to-pbest: elige al azar entre los p mejores.","pág. 534"],
+[8,"El operador ternario de JADE permite obtener nuevos individuos seleccionando, entre otros, al mejor del momento anterior.",0,"Usar solo al mejor es current-to-best, no JADE.","pág. 534"],
+[8,"JADE es un algoritmo de programación genética que emplea el operador ternario modificado con los p mejores individuos.",0,"JADE es de evolución diferencial.","pág. 533"],
+[8,"SADE es un algoritmo de evolución diferencial que se caracteriza por emplear un mecanismo adaptativo para los operadores genéticos.",1,"Adapta la estrategia durante la ejecución.","pág. 533"],
+[8,"SADE es un algoritmo de evolución diferencial que emplea memorias para optimizar el uso de los operadores de recombinación.",0,"Según los apuntes solo se habla de adaptación. Ojo: en el artículo original sí registra aciertos; si en clase se matizó, manda la profesora.","pág. 533"],
+[9,"En búsquedas exclusivamente en espacios factibles, las restricciones se manejan de forma habitual mediante penalización.",0,"Ahí se usa rechazo, reparación o preservación. La penalización es de la exploración completa.","págs. 590-592"],
+[9,"En búsquedas en espacios factibles, las restricciones se manejan de forma habitual mediante penalización.",0,"Misma idea. Solo valdría si «espacios factibles» incluyera también la zona infactible.","págs. 590-592"],
+[9,"Las estrategias de reparación ignoran cualquier solución no factible generada durante la búsqueda.",0,"Eso es el rechazo. Reparar es transformar la infactible en factible.","pág. 590"]
+];
+var f=document.getElementById("flt"),list=document.getElementById("list");
+f.innerHTML="<option value=\"\">Todos los temas</option>"+T.map(function(t,i){return "<option value=\""+i+"\">"+(i+1)+". "+t+"</option>"}).join("");
+list.innerHTML=Q.map(function(x,i){
+return "<article class=\"card\" data-t=\""+x[0]+"\" data-c=\""+(x[2]?0:1)+"\"><div class=\"hd\"><span class=\"n\">"+(i+1)+"</span><span class=\"tag\">"+T[x[0]]+"</span></div><p>"+x[1]+"</p><button class=\"opt\">Verdadero</button><button class=\"opt\">Falso</button><div class=\"sol\" hidden><p class=\"ok\">✅ Solución: <b>"+(x[2]?"Verdadero":"Falso")+"</b></p><p>🧒 En sencillo: "+x[3]+"</p><p>📘 Teoría: "+x[4]+"</p></div></article>"}).join("");
+f.onchange=function(){document.querySelectorAll(".card").forEach(function(c){c.hidden=f.value!==""&&c.dataset.t!==f.value})};
+document.addEventListener("click",function(e){var t=e.target.closest("button");if(!t)return;
+if(t.dataset.tab){document.querySelectorAll(".tabs button").forEach(function(b){b.classList.toggle("on",b==t)});
+document.getElementById("q").hidden=t.dataset.tab!="q";document.getElementById("t").hidden=t.dataset.tab!="t";f.style.visibility=t.dataset.tab=="q"?"visible":"hidden";return}
+var c=t.closest(".card");if(!c||!t.classList.contains("opt"))return;var ok=+c.dataset.c;
+c.querySelectorAll(".opt").forEach(function(o,j){o.disabled=true;if(j==ok)o.classList.add("good");else if(o==t)o.classList.add("wrong")});
+c.querySelector(".sol").hidden=false});
+</script></body></html>
