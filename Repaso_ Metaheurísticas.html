@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Repaso: Metaheurísticas</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#1d2330;--card:#fff;--mut:#5b6475;--bd:#dde1e8;--acc:#2f5fd0;--ok:#157a3d;--okbg:#e4f5ea;--err:#b3261e;--errbg:#fdeceb;--code:#eef0f4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12151c;--fg:#e6e9f0;--card:#1b202b;--mut:#9aa3b5;--bd:#2c3342;--acc:#7da2ff;--ok:#6fd694;--okbg:#17321f;--err:#ff8a82;--errbg:#3a1b19;--code:#262c3a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12151c;--fg:#e6e9f0;--card:#1b202b;--mut:#9aa3b5;--bd:#2c3342;--acc:#7da2ff;--ok:#6fd694;--okbg:#17321f;--err:#ff8a82;--errbg:#3a1b19;--code:#262c3a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:1.4rem;margin:.3em 0}h3{margin:1.2em 0 .3em;color:var(--acc)}
+.sub{color:var(--mut);margin:0 0 12px}
+.tabs{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap;align-items:center}
+.tabs button,.tabs select{border:1px solid var(--bd);background:var(--card);color:var(--fg);padding:8px 14px;border-radius:10px;font:inherit;cursor:pointer}
+.tabs button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+#flt{margin-left:auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin:14px 0}
+.hd{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.n{background:var(--acc);color:#fff;border-radius:50%;min-width:28px;height:28px;display:grid;place-items:center;font-size:.85rem}
+.tag{font-size:.75rem;color:var(--mut);border:1px solid var(--bd);border-radius:8px;padding:1px 7px}
+.opt{display:inline-block;width:49%;text-align:center;margin:6px 0;border:1px solid var(--bd);background:var(--bg);color:var(--fg);border-radius:10px;padding:9px 12px;font:inherit;cursor:pointer}
+.opt.good{background:var(--okbg);border-color:var(--ok)}.opt.wrong{background:var(--errbg);border-color:var(--err)}
+.sol{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--code)}
+.sol p{margin:.4em 0}.ok{color:var(--ok)}
+code{background:var(--code);padding:1px 5px;border-radius:5px;font-size:.92em}
+ul{padding-left:1.3em;margin:.3em 0}
+table{border-collapse:collapse;width:100%;font-size:.92rem;display:block;overflow-x:auto;margin:8px 0}td,th{border:1px solid var(--bd);padding:5px 8px;text-align:left}
+section[hidden],.sol[hidden],.card[hidden]{display:none}
+.fl{overflow-x:auto;text-align:center}
+</style></head><body><main>
+<h1>🧬 Repaso: Metaheurísticas</h1>
+<p class="sub">Preguntas V/F de examen resueltas, explicadas en sencillo · «pág.» = página del PDF de teoría</p>
+<div class="tabs"><button class="on" data-tab="q">Preguntas</button><button data-tab="t">Teoría clave</button><button data-tab="e">Esquemas</button>
+<select id="flt"></select></div>
+<section id="q"><div id="list"></div></section>
+<section id="t" hidden>
+<h3>1. Introducción a las metaheurísticas</h3>
+<ul><li><b>Por qué hacen falta</b>: en el TSP hay n! soluciones (n!/2 si las distancias son simétricas); con n=100 son ~9,3·10<sup>157</sup>. Los problemas combinatorios son NP-duros y el espacio crece de forma exponencial.</li>
+<li><b>Complejidad</b>: P (tiempo polinomial) ⊆ NP; NP-completos = los más duros de NP; NP-duros = al menos tan duros como ellos.</li>
+<li><b>Exactos</b> (programación dinámica, branch and bound): dan el óptimo pero con tiempo exponencial en el peor caso. <b>Aproximados</b> (heurísticas y metaheurísticas): buena calidad en tiempo razonable, <b>sin garantía de óptimo global</b>.</li>
+<li><b>Heurística</b>: método basado en sentido común y conocimiento del problema; no sirve para otro problema y una simple puede quedarse en óptimos locales. <b>Metaheurística</b> (Glover, 1986): familia de algoritmos aproximados de propósito general; procedimiento iterativo que guía una heurística subordinada combinando exploración y explotación.</li>
+<li>Ventajas: propósito general, gran éxito práctico, fáciles de implementar y paralelizar. Inconvenientes: aproximadas (no exactas), no deterministas (probabilísticas) y no siempre tienen base teórica.</li>
+<li><b>Solución candidata</b>: combinación de componentes que no necesariamente cumple las restricciones. <b>Solución</b>: candidata que las verifica todas. Cualquier minimización puede reformularse como maximización.</li>
+<li><b>Paradigmas de búsqueda</b>: <i>perturbativa</i> (soluciones completas, se modifican componentes), <i>constructiva</i> (soluciones parciales, se extienden con componentes), <i>sistemática</i> (completa: garantiza el óptimo o que no existe) y <i>local</i> (se mueve a vecinas; típicamente incompleta).</li></ul>
+<table><tr><th>Elemento clave</th><th>Qué es</th></tr><tr><td>Solución</td><td>Representación de la solución del problema</td></tr><tr><td>Entorno</td><td>Soluciones cercanas</td></tr><tr><td>Movimiento</td><td>Transformación de la solución actual en otra</td></tr><tr><td>Evaluación</td><td>Factibilidad de la solución y función objetivo</td></tr></table>
+<ul><li><b>Diversificación = exploración</b> (amplitud, zonas nuevas) frente a <b>intensificación = explotación</b> (profundidad, zonas prometedoras). El equilibrio dinámico evita perder tiempo en regiones malas o ya exploradas.</li>
+<li><b>Representación</b>: debe ser <i>completa</i> (representa todas las soluciones), <i>conexa</i> (hay camino entre cualquier par) y <i>eficiente</i> (fácil de manipular). Tipos: binaria (mochila, SAT), valores discretos (asignación), reales (optimización continua) y permutación (TSP, secuenciación).</li>
+<li><b>Función objetivo</b>: asigna a cada solución un valor real de calidad. Puede ser autosuficiente, orientativa, interactiva o relativa/competitiva.</li>
+<li><b>Restricciones</b>: rechazo, penalización, reparación y estrategias conservadoras.</li>
+<li><b>Clasificación</b>: inspiradas o no en la naturaleza; poblaciones o trayectorias; objetivo estático o dinámico; determinísticas o estocásticas; una o varias estructuras de vecindad; con o sin memoria.</li>
+<li><b>Evaluación cualitativa</b>: claridad, modularidad y simplicidad; intensificación (localizar óptimos locales; el global también lo es); diversificación (exploración amplia). <b>Cuantitativa</b>: habilidad para encontrar buenas soluciones (frente al óptimo, cotas u otras metaheurísticas), tiempo razonable (subjetivo y dependiente del contexto) y robustez entre ejecuciones.</li>
+<li><b>Análisis experimental</b>: definir objetivos, instancias y parámetros → medir → informar. Reproducibilidad vital. Estadística paramétrica (t-test, ANOVA) o no paramétrica (Wilcoxon, Friedman). El esfuerzo computacional depende también de SO, lenguaje, etc.</li>
+<li><b>Pasos al resolver un problema</b>: modelarlo → decidir si usar metaheurísticas (complejidad, requisitos, estado del arte) → definir representación, objetivo y restricciones → elegir software → ajustar parámetros (no hay un conjunto universal) → evaluar.</li>
+<li><b>Paralelización</b>: (1) misma calidad con menos tiempo, (2) más calidad sin más tiempo, (3) más calidad por el efecto sinérgico de la distribución espacial de la búsqueda.</li></ul>
+
+<h3>2. Búsqueda local</h3>
+<ul><li>«Local» = uso de <b>estructuras de entorno</b> (proximidad). El entorno N(s) lo marca un operador de generación de vecino y <b>todas</b> sus soluciones son vecinas. Basta diseñar la estructura de entorno para tener un algoritmo genérico.</li>
+<li>Elementos: solución inicial, operador de vecino (S → S', S' ∈ N(S)) y criterio de aceptación. El esquema general guarda la mejor solución; la búsqueda local básica devuelve la última visitada.</li>
+<li><b>Del mejor</b> (steepest-ascent): genera todo el entorno y toma el mejor vecino; si mejora a la actual, la sustituye; si no, termina. <b>Del primer mejor</b> (simple hill climbing): genera vecinos uno a uno y se queda con el primero que mejora; termina si recorre el entorno sin mejora. Misma solución inicial pero trayectorias distintas: normalmente acaban en óptimos locales distintos.</li>
+<li><b>Búsqueda aleatoria</b>: el entorno es todo el espacio. Con m soluciones y óptimo único, P(óptimo en una iteración) = 1/m; en n iteraciones = 1 − (1 − 1/m)<sup>n</sup>. Para fallar con probabilidad máxima α: <code>n &gt; log α / log(1 − 1/m)</code> (p. ej. m = 1000 y α = 0,1 → 2302 iteraciones). El recorrido al azar es una búsqueda local que acepta siempre el primer vecino, sea mejor o peor.</li>
+<li><b>TSP</b>: representación por permutación; objetivo = suma de distancias (incluida la vuelta); inicial aleatoria; vecino por <i>2-opt/intercambio</i> (dos posiciones) o <i>inversión simple</i> (invertir un tramo); selección del mejor o primer mejor; parada cuando ningún vecino mejora.</li>
+<li><b>Problema</b>: cae en óptimos locales, a veces muy lejos del global. Salidas: permitir <i>empeoramientos</i> (enfriamiento simulado, tabú), <i>cambiar la estructura de entornos</i> (tabú, VNS) o <i>reiniciar</i> desde otra solución (multiarranque, ILS).</li></ul>
+
+<h3>3. Enfriamiento simulado</h3>
+<ul><li>Búsqueda por entornos con <b>criterio probabilístico de aceptación</b> basado en la termodinámica (Metrópolis 1953; Kirkpatrick 1983). Permite empeoramientos <i>controlados</i>: su frecuencia baja conforme avanza la búsqueda.</li>
+<li>Metrópolis: si baja la energía, se acepta; si sube en δE, se acepta con probabilidad exp(−δE/kT).</li></ul>
+<table><tr><th>Termodinámica</th><th>Optimización</th></tr><tr><td>Estados del sistema</td><td>Soluciones factibles</td></tr><tr><td>Energía</td><td>Coste</td></tr><tr><td>Cambio de estado</td><td>Solución del entorno</td></tr><tr><td>Temperatura</td><td>Parámetro de control</td></tr><tr><td>Estado congelado</td><td>Solución heurística</td></tr></table>
+<ul><li><b>Algoritmo</b>: T = T0; repetir { para cont = 1..L(T): generar vecina s'; δ = f(s') − f(s) (minimizando); si δ &lt; 0 o U(0,1) ≤ exp(−δ/T), s = s'; actualizar la mejor } ; T = g(T) hasta T ≤ Tf (normalmente 0).</li>
+<li><b>Probabilidad</b> exp(−δ/T): mayor T → más probabilidad de aceptar peores; menor δ → más probabilidad. Ej.: δ = 0,4 con T = 0,95 → 0,656; con T = 0,1 → 0,018.</li>
+<li><b>T0</b> no debe ser un valor fijo ajeno al problema: <code>T0 = (μ / −ln φ) · C(S0)</code> (φ = probabilidad de aceptar una solución μ por uno peor que la inicial).</li>
+<li><b>Enfriamiento</b>: descenso constante, <i>geométrico</i> (T = α·T, el clásico), Boltzmann (T0 / (1 + log k)), Cauchy, o temperaturas fijadas por el usuario. <b>L(T)</b>: vecinos por temperatura (fijo o variable).</li>
+<li><b>Parada</b>: T ≤ Tf, nº fijo de iteraciones o ningún vecino aceptado en una iteración completa (estancado). Si T es muy baja frente al tamaño del salto, se queda atrapado en un óptimo local.</li>
+<li>Ejemplo del guion: maximizar f(x) = x³ − 60x² + 900x + 100 con 5 bits y vecino por cambio de 1 bit; óptimo en x = 10 (01010), f = 4100. Con T = 500 casi todo se acepta; con T = 100 se rechazan los empeoramientos grandes.</li></ul>
+
+<h3>4. Búsqueda tabú</h3>
+<ul><li>Búsqueda por entornos con <b>memoria adaptativa</b> (Glover, 1989-90). Dos ideas: permite <b>empeoramientos</b> y evita ciclos con un <b>entorno tabú restringido</b> E*(S) ⊂ E(S); en cada iteración acepta siempre el mejor vecino de E*, sea mejor o peor.</li>
+<li><b>Memoria a corto plazo (lista tabú)</b>: guía desde el comienzo. Puede guardar <i>soluciones</i> tabú (se sacan del vecindario), <i>movimientos</i> tabú (se eliminan los vecinos que resultan de ese movimiento) o <i>atributos</i> tabú. Una solución con elementos tabú-activos es tabú.</li>
+<li><b>Tenencia tabú</b>: iteraciones que algo permanece tabú; con lista circular equivale a su tamaño; se fija experimentalmente en función del nº de atributos (p. ej. [n/3, 3n]). <b>Criterio de aspiración</b>: ignora el estado tabú si se cumple un nivel (p. ej. mejora la mejor solución). <b>Lista de candidatos</b>: examinar solo parte del entorno cuando es grande o costoso.</li>
+<li><b>Memoria a largo plazo</b>: guía <i>a posteriori</i>, tras una primera etapa con corto plazo; reinicia desde otra solución. Usa la <b>memoria de frecuencias</b> (cuántas veces cada valor de atributo estuvo en soluciones visitadas).</li>
+<li><b>Intensificar</b>: volver a regiones atractivas; se guarda una lista de k soluciones élite (k = 5 o 20) y al estancarse se reanuda desde una de ellas (con o sin restaurar la memoria a corto plazo). <b>Diversificar</b>: ir a regiones no exploradas; solución inicial nueva generada con la memoria de frecuencias, dando más probabilidad a los valores menos usados. <b>Oscilación estratégica</b>: al estancarse, elegir al azar entre intensificar y diversificar.</li>
+<li>Estructura de la memoria a largo plazo según la representación: binaria → vector de n contadores; entera → matriz M[i,k]; permutación → matriz M[i,j] (cuántas veces i va seguido de j). También se puede usar M para modificar temporalmente la función objetivo y aplicar un greedy.</li>
+<li>4 dimensiones de la memoria: <b>recencia, frecuencia, calidad e influencia</b>. Memoria explícita (soluciones completas) o implícita (movimientos/atributos).</li>
+<li>Ejemplo TSP del guion: greedy inicial (coste 370), 2-opt, 3 movimientos aleatorios por iteración, aspiración si el tabú mejora el coste, y frecuencia de aparición i → j en el largo plazo.</li></ul>
+
+<h3>5. Multiarranque: GRASP, ILS y VNS</h3>
+<ul><li><b>Multiarranque</b>: algoritmo global que itera (1) <i>generar una solución inicial</i> y (2) <i>búsqueda local</i> para optimizarla; devuelve la mejor. Etapa 1: aleatoria o con construcción sofisticada. Etapa 2: búsqueda local básica o trayectorias más sofisticadas. Parada: desde un nº fijo de iteraciones hasta criterios que analizan la evolución.</li>
+<li><b>Básico</b> (inicio aleatorio + búsqueda local): converge al óptimo global con probabilidad 1 si los puntos tienden a infinito, pero es muy ineficiente (repite óptimos locales).</li>
+<li><b>Modelos</b>: constructivos de la solución inicial (GRASP, colonias de hormigas); iterativos sobre la solución encontrada (ILS, VNS); hibridaciones (meméticos, búsqueda dispersa).</li>
+<li><b>GRASP</b> (Feo y Resende, 1995): en cada iteración, construcción <i>greedy aleatorizada</i> (con <b>lista restringida de candidatos, LRC</b>, selección aleatoria y adaptación de la función de selección) + búsqueda local; se devuelve la mejor. La LRC aporta diversidad. Ejemplo TSP: LRC de tamaño 3, se elige uniformemente entre los 3 mejores candidatos.</li>
+<li><b>ILS</b>: búsqueda local sobre una solución obtenida por <b>mutación/perturbación</b> de un óptimo local anterior. Perturbación sesgada, controlada y equilibrada: muy pequeña genera ciclos sin ganancia; muy grande destruye información. Cuanto más efectiva es la búsqueda local, mayor debe ser la perturbación. Criterio de aceptación decide qué solución continúa.</li>
+<li><b>VNS</b>: cambio sistemático de entorno N_k dentro de la búsqueda local. Si S'' mejora a S → S = S'' y k = 1; si no, k = k+1 (hasta k_max). Se apoya en que un mínimo local con un entorno no lo es necesariamente con otro, el global lo es con todos, y los mínimos locales suelen estar cerca entre sí.</li>
+<li><b>ILS vs VNS</b>: ILS construye explícitamente un camino entre óptimos locales; VNS se basa en cambiar de entorno.</li></ul>
+
+<h3>6. Metaheurísticas basadas en poblaciones</h3>
+<ul><li>Proceso de <b>mejora iterativa de una población</b>: inicializar → generar nueva población → integrarla en la actual por selección/reemplazamiento → repetir hasta la parada.</li>
+<li>Normalmente parten de soluciones completas, pero <b>algunas empiezan con parciales o vacías</b>. Generación y reemplazamiento <b>pueden usar memoria o no</b>.</li>
+<li><b>Basadas en evolución</b>: se reproducen soluciones con operadores de variación (algoritmos evolutivos, scatter search). <b>Basadas en pizarra</b>: la población construye una memoria compartida que guía la generación (hormigas, EDAs); no hay selección explícita.</li>
+<li>Selección: la generada pasa a ser la nueva, o elitismo para conservar lo mejor de ambos conjuntos.</li>
+<li>Las P-metaheurísticas son <b>más exploradoras</b>; las de trayectorias, más explotadoras. La población inicial debe ser diversa para evitar la convergencia prematura.</li>
+<li>Parada: estática (nº de generaciones/evaluaciones), adaptativa (sin mejora, solución satisfactoria) o basada en la diversidad. Ejemplos: algoritmos evolutivos (AG, estrategias de evolución, programación evolutiva, PG, EDAs, ED), scatter search, inteligencia de enjambres (hormigas, partículas, abejas) y sistemas inmunes.</li></ul>
+
+<h3>7. Algoritmos evolutivos (genéticos)</h3>
+<ul><li>Inspirados en Darwin: los individuos compiten, los mejor adaptados se reproducen más, transmiten sus genes y la especie se adapta lentamente. <b>Metáfora</b>: individuo = solución; fitness = calidad/función objetivo; entorno = problema; gen = elemento; alelo = valor.</li>
+<li><b>Genotipo</b> = codificación (sobre él actúan los operadores); <b>fenotipo</b> = solución decodificada (sobre él se calcula el fitness).</li>
+<li><b>Ciclo</b>: inicializar y evaluar → (selección de padres → recombinación → mutación → evaluar → reemplazamiento) hasta la parada. Paradigmas: AG (Holland, 1975), estrategias de evolución (Schwefel y Rechenberg, 1965), programación evolutiva (Fogel, 1960-66) y programación genética (Koza, 1989).</li>
+<li><b>Modelo generacional</b>: toda la población se reemplaza (se aconseja <i>elitismo</i> para no perder el mejor). <b>Modelo estacionario</b>: se seleccionan pocos padres y sus hijos reemplazan a individuos; reemplazar al peor da alta presión selectiva.</li>
+<li><b>Representación</b>: binaria, entera, real, secuencia u orden. Inicialización distribuida por el espacio (binaria: 0/1 con p = 0,5; real: uniforme en el intervalo), o desde una heurística o conocimiento experto. La evaluación suele ser lo más costoso; las restricciones pueden entrar como penalización.</li>
+<li><b>Selección</b> (da más opciones a los mejores sin descartar a los menos buenos): aleatoria; <b>ruleta</b> (probabilidad proporcional al fitness; tradicional, presión selectiva muy alta); <b>torneo</b> (mejor de k elegidos al azar con reemplazamiento; mayor k, mayor presión).</li>
+<li><b>Cruce</b>: probabilidad alta (60-90 %); hijos heredan de ambos padres y deben ser válidos (en un punto; aritmético y BLX-α en reales). <b>Mutación</b>: probabilidad baja por gen o individuo; debe poder alcanzar cualquier zona del espacio y controlar su tamaño.</li>
+<li><b>Reemplazo estacionario</b>: reemplazar al peor (alta presión); torneo restringido (reemplaza al más parecido de w); peor entre semejantes (equilibrio diversidad/presión); crowding determinístico (el hijo reemplaza a su padre más parecido, mantiene diversidad). <b>Alto elitismo</b>: unir padres e hijos y quedarse con los N mejores.</li>
+<li><b>Parada</b>: óptimo o calidad aceptable, recursos (evaluaciones, generaciones) o paciencia (iteraciones sin mejora).</li>
+<li><b>Convergencia vs diversidad</b>: la presión selectiva centra la búsqueda, pero demasiada → falta de diversidad → <b>convergencia prematura</b> (casi irreversible). Se combate con mutación, cruce, separación espacial, adaptación/autoadaptación y estrategias de reemplazo. <b>Exploración</b> (amplitud) frente a <b>explotación</b> (profundidad).</li>
+<li>Ejemplos: maximizar f(x) = x² con enteros 0-63 (6 bits, genotipo ↔ fenotipo); TSP con orden y permuta de dos ciudades; corte de bananas (genotipo entero con tipo de corte; élite de 2 individuos; desperdicio 5-9 % frente a 8-12 %).</li>
+<li><b>Buenas prácticas</b>: nunca sacar conclusiones de una sola ejecución (medias, medianas, ejecuciones independientes); no ajustar con ejemplos simples si se va a trabajar con casos reales. Resumen: muy potentes, gran aplicabilidad y altas prestaciones a <b>bajo coste</b>.</li></ul>
+
+<h3>8. Programación genética</h3>
+<ul><li>Los AG codifican una estructura de solución fija; la <b>PG busca la mejor solución y la estructura óptima</b>. Diferencia principal: la <b>representación</b>, normalmente no lineal (<b>árboles</b>, grafos). Cruce muy diverso; la mutación es posible pero no imprescindible. Aplicación clásica: <b>regresión simbólica</b>.</li>
+<li><b>Gramática libre de contexto</b> (grammar guided GP): define las expresiones válidas y asegura soluciones factibles. <b>Nodos terminales</b> (hojas: variables, constantes) y <b>nodos función</b> (operadores matemáticos, funciones específicas, condicionales, lógicas, asignación, bucles, subrutinas). Genotipo = recorrido en inorden; fenotipo = programa/expresión. Importa el factor de balanceo del árbol.</li>
+<li><b>Inicialización</b> con profundidad máxima del usuario: <i>completa</i> (todos los terminales a esa profundidad), <i>creciente</i> (terminales a profundidad ≤ máxima), <i>combinada</i> (mitad y mitad). También aleatoria.</li>
+<li><b>Evaluación</b>: como en cualquier evolutivo (puede ser mono o multiobjetivo, y se puede usar recursividad).</li>
+<li><b>Cruce</b>: elegir un punto de corte en cada padre e intercambiar subárboles (el 2º debe cumplir restricciones sintácticas y de tamaño). Sesgar los puntos hacia nodos internos (prob. en terminales &lt; 1/nº de arcos). Muy disruptivo, no genera hijos «iguales», puede dar malos hijos de buenos padres y explora mucho pero explota poco → poblaciones mayores.</li>
+<li><b>Mutación</b>: reemplazo de un subárbol por otro o por un nodo, expansión de un terminal, permutación de nodos y mutación de constantes.</li>
+<li><b>Parámetros</b>: población mayor que en AG (≈500 frente a 50-100), cruce y mutación variables o adaptativos, se suele usar élite. <b>Bloat</b> = supervivencia del más grande (los árboles crecen): limitar el tamaño de hijos o aplicar <b>presión parsimoniosa</b> (penalizar tamaño en el fitness o multiobjetivo).</li>
+<li><b>Regresión simbólica</b>: obtiene estructura <i>y</i> coeficientes de g a partir de pares entrada-salida (la numérica clásica solo ajusta coeficientes de una estructura fija). Terminales {X, constantes}; funciones {+, −, ×, /, √…}; fitness = error (p. ej. ECM = 1/n·Σ(y − ŷ)²); las constantes solo cambian por mutación.</li></ul>
+
+<h3>9. Evolución diferencial</h3>
+<ul><li>Modelo evolutivo que <b>enfatiza la mutación</b> y recombina después con un <b>operador ternario</b>. Propuesto para <b>optimización continua</b> (Storn, 1997); cada individuo es un vector de n reales entre límites inferior y superior.</li>
+<li><b>Esquema</b>: por cada individuo objetivo x_i se eligen 3 al azar (x_r0, x_r1, x_r2) → vector mutado <code>v = x_r0 + F·(x_r1 − x_r2)</code>, con F ∈ [0,1] → <b>cruce discreto</b> entre v y x_i con ratio Cr ∈ [0,1] → el hijo <b>compite con su padre directo</b> y lo sustituye solo si es mejor.</li>
+<li><b>Autoadaptación</b>: al principio los individuos están dispersos y las diferencias son grandes (exploración); al converger son pequeñas (explotación), sin parámetros extra.</li>
+<li><b>Notación DE/x/y/z</b>: x = vector a mutar (<i>rand</i> o <i>best</i>), y = nº de vectores diferencia (1 o 2), z = cruce (<i>bin</i> o <i>exp</i>).</li>
+<li><b>Fortalezas</b>: simple y efectivo, buen equilibrio entre velocidad de convergencia y convergencia prematura, buena primera opción (o segunda tras GA), muy rápido. <b>Variantes</b>: 1 o 2 vectores diferencia, factor F, y recombinación (uno o varios puntos, exponencial, uniforme, aritmética).</li>
+<li><b>Avanzados</b>: <b>SaDE</b> (adaptación de la estrategia), <b>DEGL</b> (mutación basada en vecindad), <b>JADE</b> (DE/current-to-pbest con archivo opcional, autoadapta F y CR). current-to-best: <code>v = x_i + F(x_best − x_i) + F(x_r1 − x_r2)</code>; current-to-pbest: x_best sustituido por uno elegido <b>al azar entre los p mejores</b>.</li>
+<li>Línea prometedora: hibridar ED con búsqueda local.</li></ul>
+
+<h3>10. Manejo de restricciones</h3>
+<ul><li>Problema de optimización: hallar x* que maximiza/minimiza f(x) sujeto a restricciones de desigualdad g_i(x) y de igualdad h_j(x) = 0. <b>Factible</b> = cumple todas; <b>óptima</b> = factible con el mejor valor de f.</li>
+<li>Restricciones <b>fuertes</b> (obligatorias) o <b>débiles</b> (recomendables); <b>explícitas</b> (definidas) o <b>implícitas</b> (obvias); lineales o no lineales. Ej. horarios: solapar clases (fuerte), clase antes de las 9:30 (débil). TSP: visitar cada ciudad una vez (implícita).</li>
+<li>Las metaheurísticas básicas <b>no</b> gestionan restricciones; las constructivas (GRASP, hormigas) se adaptan fácilmente. La decisión suele ser genérica, independiente de la metaheurística.</li>
+<li><b>Exploración restringida</b> (solo región factible; no se evalúan infactibles pero puede ser ineficaz porque los óptimos suelen estar cerca del límite): <i>rechazo</i> (se ignora toda infactible), <i>reparación</i> (se transforma en factible, suele ser un greedy) y <i>preservación</i> (representación y operadores que garantizan factibilidad; la que más diseño exige y es específica).</li>
+<li><b>Exploración completa</b> (todo el espacio; se pierde tiempo en infactibles y se puede devolver una infactible): <b>penalización</b> (la más usada) <code>f'(x) = f(x) + w·P(x)</code>, con P → 0 si es factible y creciente con la violación. Permite pasar entre región factible e infactible, pero es difícil definir P y w (peso alto → solo factibles; bajo → riesgo de infactibles).</li>
+<li>P(x): contar restricciones violadas (peso mayor a las fuertes; no va bien con restricciones muy fuertes o pocas) o medir el <b>grado de infactibilidad</b> (|h_i(x)| para igualdades; α_i·g_i(x) para desigualdades). Pesos <b>estáticos</b>, <b>dinámicos</b> (permitir violar al inicio → diversificar; rechazar después → intensificar) o <b>adaptativos</b>.</li>
+<li><b>Decodificación</b>: representación indirecta R → S que asocia cada representación con una solución factible. Debe cumplir: cada r ∈ R ↔ s factible; cada s factible tiene representación; baja complejidad; las factibles tienen igual nº de representaciones; distancias parecidas en R y en S.</li>
+<li><b>Mochila</b>: max Σ v_i x_i sujeto a Σ w_i x_i ≤ W. Reparación greedy: quitar elementos hasta cumplir la capacidad (p. ej. el que maximiza v_i/w_i, según el guion). Penalización: f' = f − P(h(x)), con h(x) = exceso de peso; P logarítmica, lineal o cuadrática (la logarítmica da muy buenos resultados). <b>TSP</b>: representación y operadores de orden (intercambio, inversión; cruces OX, PMX) → soluciones directamente factibles.</li></ul>
+
+<h3>11. Optimización multiobjetivo</h3>
+<ul><li>Se optimizan a la vez K funciones objetivo z(x) = (f1(x), …, fK(x)), normalmente <b>en conflicto</b>. X = espacio de decisión; Y = espacio objetivo (⊆ ℝ<sup>K</sup>); puede haber restricciones. Ej. TSP minimizando distancia y tiempo.</li>
+<li><b>Dominancia</b> (maximizando): a domina a b si f_i(a) ≥ f_i(b) para todo i y f_j(a) &gt; f_j(b) para algún j. Solución <b>Pareto-óptima</b> (no dominada): ninguna otra la domina. Conjunto Pareto-óptimo = todas las no dominadas; sus valores forman el <b>frente de Pareto</b>.</li>
+<li>Meta: una aproximación del frente <b>cercana al óptimo, bien distribuida y que cubra los extremos</b>.</li>
+<li><b>Enfoques</b>: <i>agregación</i> (una única función o un orden entre objetivos; una solución por ejecución, ¿cómo obtener N soluciones?) o <i>búsqueda en alta dimensión</i> (se analizan todos los objetivos y se obtiene el frente).</li>
+<li>Las técnicas matemáticas clásicas generan las soluciones una a una y fallan con frentes cóncavos o desconectados. Con AG: modelos con pesos (OW-GA, RW-GA) y modelos con poblaciones no dominadas: <b>MOGA</b> (rango = 1 + nº de individuos que lo dominan; no dominado → rango 1), <b>NPGA</b> (torneo + dominancia + nichos), <b>NSGA</b> (frentes sucesivos con sharing). Elitismo: <b>SPEA/SPEA2</b> (conjunto élite) y <b>NSGA-II</b> (dentro de la población).</li></ul>
+<h3>12. Colonias de hormigas (ACO)</h3>
+<ul><li><i>Este tema no está en el PDF de clase: es un resumen general, contrástalo con tus apuntes.</i></li>
+<li>Constructivo y poblacional (tipo pizarra): cada hormiga construye una solución paso a paso en un grafo guiada por la <b>feromona τ</b> (memoria de búsqueda, aprendizaje a largo plazo) y la <b>información heurística η</b> (conocimiento previo, p. ej. 1/distancia; no es memoria). Regla de transición: probabilidad ∝ τ<sup>α</sup>·η<sup>β</sup>.</li>
+<li><b>AS (sistema de hormigas)</b>: la matriz solo se actualiza al <b>final</b> de la iteración (evaporación ρ + depósito de las hormigas).</li>
+<li><b>ACS (sistema de colonias de hormigas, Dorigo y Gambardella)</b>: regla pseudoaleatoria proporcional (con probabilidad q0 elige el mejor arco: explotación), <b>actualización global</b> solo con la mejor hormiga y <b>actualización local online</b> (al cruzar un arco su feromona se reduce → diversifica hacia arcos no visitados).</li>
+<li><b>MAX-MIN</b>: solo deposita la mejor y la feromona se limita a [τmin, τmax]. <b>Mejor-Peor</b>: refuerza la mejor solución y penaliza la peor.</li>
+<li>Intensificación: depósito de la mejor, q0 y β altos, búsqueda local. Diversificación: evaporación, actualización local, límites τmin/τmax. Funcionan bien en grafos dirigidos y <b>dinámicos</b> (la evaporación permite adaptarse).</li></ul>
+<h3>13. Particle Swarm Optimization (PSO)</h3>
+<ul><li><i>No está en el PDF: resumen general.</i> Enjambre de partículas con posición y velocidad en espacio continuo: <code>v = w·v + c1·r1·(pbest − x) + c2·r2·(gbest − x)</code>, <code>x = x + v</code>. Con memoria de la mejor posición propia (pbest) y global (gbest).</li>
+<li>Muy parecida a la ED (poblacional, reales, optimización continua, usa diferencias entre individuos), pero ninguna es generalización de la otra.</li></ul>
+<h3>14. Algoritmos meméticos e híbridas</h3>
+<ul><li><i>No está en el PDF: resumen general.</i> <b>Híbrida</b>: mezcla técnicas para lograr un buen equilibrio exploración/explotación. <b>Memético</b>: algoritmo evolutivo + optimizador local (búsqueda local o trayectoria) aplicado a los agentes.</li>
+<li>Diseño (sin receta fija): <b>cuándo</b> aplicar el optimizador (cada generación, cada k, al final…), <b>sobre qué agentes</b> (todos, los mejores, un porcentaje al azar), <b>qué optimizador/entorno</b>, <b>intensidad</b> (esfuerzo por agente) y <b>frecuencia</b>. Con presupuesto fijo, poca frecuencia → mucha intensidad y al revés. Revisa tus apuntes por la lista exacta de las cinco cuestiones.</li>
+<li><b>Lamarckiano</b>: el agente mejorado reemplaza al original en la población. <b>Baldwiniano</b>: solo se usa el fitness mejorado; el agente original no cambia.</li></ul>
+<h3>15. Paralelas, Map-Reduce y No Free Lunch</h3>
+<ul><li><i>No está en el PDF: resumen general.</i> Objetivos de la paralelización: los tres de la sección 1. Clasificación (Crainic): cardinalidad del control de búsqueda, tipo de intercambio de información entre procesos y diferenciación de la búsqueda (puntos de partida y estrategias). La búsqueda por entornos mantiene una solución, las poblaciones un conjunto. Intercambiar solo la mejor solución o memorias adaptativas cambia la diversidad según el caso.</li>
+<li><b>Map-Reduce</b>: modelo que reparte el procesamiento de grandes volúmenes de datos (Map en paralelo, Reduce agrega) y oculta la distribución y la tolerancia a fallos. No ahorra tiempo en todos los problemas.</li>
+<li><b>No Free Lunch</b> (Wolpert y Macready): promediando sobre todos los problemas, ningún algoritmo supera a los demás; una técnica excelente en un problema puede ser mala en otro.</li></ul>
+<p class="sub">Los temas 12 a 15 se añadieron a partir de los exámenes y no aparecen en el PDF de teoría.</p>
+
+</section></section>
+<section id="e" hidden></section></main>
+<script>
+var T=["Introducción","Búsqueda local","Enfriamiento simulado","Búsqueda tabú","Multiarranque","Poblaciones","Algoritmos evolutivos","Prog. genética","Evolución diferencial","Restricciones","Colonias de hormigas","PSO","Meméticos e híbridas","Paralelas, Map-Reduce y NFL"];
+var N=[1,2,3,4,5,6,7,8,9,10,12,13,14,15];
+var Q=[
+[0,"Una solución candidata a un problema puede verificar todas las restricciones.",1,"La candidata no tiene por qué cumplirlas, pero puede. Si las cumple todas, ya es una solución.","pág. 28"],
+[0,"La exploración e intensificación se centran en explorar nuevos espacios de búsqueda no analizados hasta el momento.",0,"Eso es solo la exploración. Intensificar es profundizar en zonas prometedoras.","pág. 46"],
+[0,"Elementos clave de una metaheurística: representación de la solución, soluciones cercanas, transformación de la solución actual en otra, factibilidad de la solución y función objetivo.",1,"Son los 4 bloques: solución, entorno, movimiento y evaluación.","pág. 36"],
+[0,"Elementos clave de una metaheurística: representación de la solución, soluciones cercanas, transformación de la solución actual en otra, la generación de la solución y la función objetivo.",0,"Cambia una palabra: es la factibilidad, no la generación.","pág. 36"],
+[0,"Elementos básicos de cualquier metaheurística: representación de la solución, reproducción de soluciones en el entorno y evaluación de la solución.",0,"La «reproducción» no es un elemento básico; lo son solución, entorno, movimiento y evaluación.","pág. 36"],
+[0,"Un óptimo global puede no ser local.",0,"El óptimo global también es óptimo local.","pág. 81"],
+[0,"Los tiempos de las metaheurísticas dependen exclusivamente de la técnica empleada.",0,"También influyen la implementación, el lenguaje, el SO, la instancia y los parámetros.","pág. 90"],
+[0,"Los tiempos de las metaheurísticas dependen de algún modo de la técnica empleada.",1,"La técnica influye, pero no es lo único.","pág. 90"],
+[0,"Un algoritmo es constructivo cuando la solución se construye en un único paso.",0,"Se construye paso a paso, añadiendo componentes a una solución parcial.","pág. 33"],
+[0,"Las metaheurísticas se centran principalmente en el campo de la Inteligencia Computacional.",0,"Lo más probable: están en la intersección de IA, IC y teoría de algoritmos. Confírmalo con la profesora.","pág. 5"],
+[0,"El tiempo es un factor para medir el equilibrio entre eficiencia y eficacia de las metaheurísticas de trayectorias y poblaciones.",1,"Se evalúa la calidad de la solución y un tiempo razonable.","págs. 83-85"],
+[0,"El único objetivo de las metaheurísticas paralelas es reducir el tiempo de ejecución.",0,"Hay tres: menos tiempo con la misma calidad, más calidad sin más tiempo y más calidad por efecto sinérgico.","pág. 94"],
+[0,"En un problema combinatorio con 5 variables y 5 valores por variable, el algoritmo evolutivo es la opción más adecuada.",0,"Son solo 5⁵ = 3125 soluciones: se enumeran o se usa un método exacto.","págs. 13, 25"],
+[0,"Los algoritmos evolutivos son las mejores técnicas de todas las vistas para resolver problemas combinatorios.",0,"No hay técnica universalmente mejor; depende del problema.","págs. 78, 106"],
+[1,"Solo a parte de las soluciones del entorno de la solución actual, delimitado por un operador de generación, se denominan vecinas.",0,"Son vecinas todas las del entorno.","pág. 115"],
+[1,"Una búsqueda local tiende hacia óptimos locales que pueden estar muy alejados del óptimo global.",1,"Es su gran problema.","pág. 172"],
+[1,"El término local se refiere al uso de estructuras de entorno que reflejan la proximidad o vecindad entre soluciones.",1,"Local = cercanía entre soluciones.","pág. 114"],
+[1,"En una búsqueda aleatoria, la probabilidad de obtener el óptimo en una sola iteración es 1/m, con m el tamaño del espacio de búsqueda.",1,"Con óptimo único, cada solución tiene probabilidad 1/m.","pág. 133"],
+[1,"Las búsquedas del mejor y del primer mejor deben devolver, por regla general, resultados distintos con la misma semilla.",1,"Misma solución inicial pero distinta trayectoria: suelen acabar en óptimos locales distintos.","págs. 142-159"],
+[1,"La principal diferencia entre la búsqueda del mejor y la del primer mejor está en la transformación de la solución actual en otra.",1,"Representación, entorno y objetivo son iguales; cambia cómo se elige el vecino (el movimiento).","pág. 165"],
+[1,"En una búsqueda local del mejor (o del primer mejor) se deben incorporar incremento y evaporación de feromonas para mejorar la exploración.",0,"Las feromonas son de las hormigas; la búsqueda local básica no usa memoria.","pág. 142"],
+[2,"El enfriamiento simulado intenta una explotación al comienzo de la búsqueda y exploración en las etapas finales.",0,"Al revés: con T alta explora al principio y con T baja explota al final.","pág. 189"],
+[2,"El enfriamiento simulado es una metaheurística de trayectorias que persigue exploración al comienzo y explotación al final.",1,"Justo ese es su comportamiento.","pág. 189"],
+[2,"El enfriamiento simulado aplica una filosofía de diversificar al principio y explotar al final.",1,"Diversificar = explorar.","pág. 189"],
+[2,"En el enfriamiento simulado, a mayor temperatura menor probabilidad de aceptar soluciones peores.",0,"P = exp(−δ/T) sube con T: más temperatura, más se acepta.","pág. 196"],
+[2,"En el enfriamiento simulado, cuanto mayor sea la diferencia de calidad entre la solución actual y la candidata, mayor es la probabilidad de aceptar la peor.",0,"Con δ grande, exp(−δ/T) cae.","pág. 196"],
+[2,"En el enfriamiento simulado, cuanto menor sea la diferencia de calidad entre la solución actual y la candidata, mayor es la probabilidad de aceptar la peor.",1,"Con δ pequeño, exp(−δ/T) se acerca a 1.","pág. 196"],
+[3,"El algoritmo de búsqueda tabú permite movimientos de empeoramiento.",1,"Acepta el mejor vecino del entorno restringido aunque sea peor.","pág. 233"],
+[3,"La memoria a largo plazo de la búsqueda tabú solo permite intensificar la búsqueda después de un estancamiento.",0,"Permite intensificar y diversificar (y alternarlas).","págs. 249-257"],
+[3,"Las estructuras de memoria de la búsqueda tabú operan solo en las dimensiones de calidad y frecuencia.",0,"Son cuatro: recencia, frecuencia, calidad e influencia.","pág. 229"],
+[3,"La mejor estrategia con la memoria a largo plazo ante un estancamiento es la oscilación estratégica.",0,"No hay una mejor universal: intensificar, diversificar u oscilar son alternativas.","pág. 257"],
+[3,"Al igual que la temperatura del enfriamiento simulado, la tenencia tabú debe inicializarse con un valor relacionado con el problema.",1,"T0 depende del coste inicial; la tenencia, del número de atributos (p. ej. entre n/3 y 3n).","págs. 205, 247"],
+[3,"La memoria de corto plazo se utiliza para guiar la búsqueda a posteriori, después de una primera etapa.",0,"Eso es la de largo plazo. La de corto plazo guía desde el principio.","págs. 225-226"],
+[3,"Las estrategias de diversificación se basan en regresar a regiones atractivas ya exploradas para buscar más extensamente.",0,"Eso es intensificar. Diversificar es ir a zonas no exploradas.","págs. 250, 254"],
+[3,"El diseño de la memoria a largo plazo de la búsqueda tabú parte normalmente de la representación de la solución.",1,"Vector, matriz M[i,k] o M[i,j] según sea binaria, entera o permutación.","pág. 258"],
+[3,"El diseño de la memoria a corto plazo de la búsqueda tabú parte normalmente de la representación de la solución.",1,"Los atributos y movimientos tabú dependen de la representación y del operador.","pág. 246"],
+[3,"Los sistemas de hormigas son métodos constructivos como la búsqueda tabú.",0,"La tabú es de trayectorias (modifica una solución completa), no constructiva.","pág. 233"],
+[4,"En una búsqueda multiarranque no se pueden utilizar métodos de trayectoria sofisticados en la etapa 2.",0,"Se puede usar búsqueda local básica o algo más sofisticado.","pág. 293"],
+[4,"La búsqueda multiarranque tiene dos etapas: 1) obtención de una solución optimizada y 2) trayectoria muy sofisticada.",0,"Etapa 1: generar solución inicial. Etapa 2: búsqueda local.","pág. 289"],
+[4,"La búsqueda multiarranque se basa exclusivamente en un proceso de trayectoria muy sofisticado.",0,"Combina generar soluciones iniciales y búsqueda local, que puede ser simple.","pág. 289"],
+[4,"El criterio de parada en las búsquedas multiarranque se limita a un número fijo de iteraciones.",0,"Va de criterios simples a otros que analizan la evolución.","pág. 294"],
+[4,"GRASP utiliza una lista restringida de candidatos para aportar diversidad.",1,"La LRC añade aleatoriedad a la construcción greedy.","pág. 301"],
+[4,"GRASP y los sistemas de colonias de hormigas se pueden clasificar como algoritmos constructivos.",1,"Ambos construyen la solución añadiendo componentes.","pág. 297"],
+[4,"Los sistemas de hormigas se asemejan a las búsquedas multiarranque.",1,"La pág. 297 los incluye entre los modelos multiarranque constructivos.","pág. 297"],
+[4,"Los OCH con búsqueda local son un algoritmo multiarranque.",1,"Mismo motivo que la anterior.","pág. 297"],
+[4,"Los algoritmos meméticos son técnicas multiarranque.",1,"Aparecen como hibridaciones dentro de los modelos multiarranque.","pág. 297"],
+[5,"Las P-metaheurísticas siempre comienzan con una población de soluciones completas.",0,"Algunas parten de soluciones parciales o vacías.","pág. 327"],
+[5,"Las P-metaheurísticas siempre utilizan memoria de búsqueda.",0,"Pueden basarse solo en la población actual.","pág. 328"],
+[5,"Las metaheurísticas de colonias de hormigas pueden considerarse basadas en poblaciones.",1,"Son P-metaheurísticas de tipo pizarra (memoria compartida).","págs. 326, 330"],
+[6,"Ventajas de la computación evolutiva: amplia aplicabilidad, alto coste en desarrollo y posibilidad de ejecutar interactivamente.",0,"Su ventaja es el bajo coste de desarrollo.","pág. 419"],
+[6,"Las metaheurísticas basadas en computación evolutiva no garantizan la solución óptima en un tiempo finito.",1,"Son métodos aproximados.","pág. 25"],
+[6,"Las metaheurísticas basadas en computación evolutiva siempre obtienen la solución óptima en un tiempo finito.",0,"No hay esa garantía.","pág. 25"],
+[6,"La selección por ruleta es un algoritmo novedoso con baja presión selectiva.",0,"Es el tradicional y tiene presión selectiva muy alta.","pág. 375"],
+[6,"En los algoritmos evolutivos generacionales se incorpora el elitismo para mejorar la diversidad de soluciones.",0,"El elitismo evita perder al mejor individuo; no aporta diversidad.","pág. 385"],
+[6,"En los algoritmos evolutivos estacionarios se incorpora el elitismo del mejor individuo para mejorar la diversidad de soluciones.",0,"El elitismo es del modelo generacional y no mejora la diversidad. En estacionarios se usa torneo restringido o crowding.","pág. 386"],
+[6,"Los algoritmos de evolución generacional se comportan bien cuando todas las variables son reales.",0,"Generacional es un modelo de reemplazo; quien destaca en reales es la evolución diferencial.","pág. 360"],
+[7,"En programación genética se emplea siempre una inicialización completa y/o creciente.",0,"También existe la combinada (mitad y mitad) y la aleatoria.","págs. 452-455"],
+[7,"La mutación en programación genética solo puede reemplazar subárboles completos.",0,"También hay expansión de terminal, permutación de nodos y mutación de constantes.","pág. 464"],
+[7,"La programación genética es una generalización de los algoritmos evolutivos.",0,"Es un paradigma dentro de ellos, no una generalización.","pág. 358"],
+[7,"La programación genética es una generalización de la evolución diferencial.",0,"Evolucionan cosas distintas: árboles frente a vectores de reales.","pág. 358"],
+[7,"La programación genética aparece posteriormente a los algoritmos genéticos como un caso particular de los mismos.",1,"AG (Holland, 1975) y PG (Koza, 1989): un AG con representación en árbol.","pág. 358"],
+[7,"La programación genética aparece posteriormente a la evolución diferencial como un caso particular de ella.",0,"La PG (1989) es anterior a la ED (1997).","págs. 358, 540"],
+[8,"Los algoritmos de evolución diferencial se utilizan mucho en optimización continua.",1,"Es uno de los enfoques con más éxito en continuo.","pág. 491"],
+[8,"Los algoritmos de evolución diferencial se comportan bien cuando el dominio de todas las variables son los reales.",1,"Sus individuos son vectores de reales.","pág. 491"],
+[8,"El operador ternario de JADE permite obtener nuevos individuos seleccionando, entre otros, uno de los p mejores del momento anterior.",1,"Es current-to-pbest: elige al azar entre los p mejores.","pág. 534"],
+[8,"El operador ternario de JADE permite obtener nuevos individuos seleccionando, entre otros, al mejor del momento anterior.",0,"Usar solo al mejor es current-to-best, no JADE.","pág. 534"],
+[8,"JADE es un algoritmo de programación genética que emplea el operador ternario modificado con los p mejores individuos.",0,"JADE es de evolución diferencial.","pág. 533"],
+[8,"SADE es un algoritmo de evolución diferencial que se caracteriza por emplear un mecanismo adaptativo para los operadores genéticos.",1,"Adapta la estrategia durante la ejecución.","pág. 533"],
+[8,"SADE es un algoritmo de evolución diferencial que emplea memorias para optimizar el uso de los operadores de recombinación.",0,"Según los apuntes solo se habla de adaptación. Ojo: en el artículo original sí registra aciertos; si en clase se matizó, manda la profesora.","pág. 533"],
+[9,"En búsquedas exclusivamente en espacios factibles, las restricciones se manejan de forma habitual mediante penalización.",0,"Ahí se usa rechazo, reparación o preservación. La penalización es de la exploración completa.","págs. 590-592"],
+[9,"En búsquedas en espacios factibles, las restricciones se manejan de forma habitual mediante penalización.",0,"Misma idea. Solo valdría si «espacios factibles» incluyera también la zona infactible.","págs. 590-592"],
+[9,"Las estrategias de reparación ignoran cualquier solución no factible generada durante la búsqueda.",0,"Eso es el rechazo. Reparar es transformar la infactible en factible.","pág. 590"],
+[10,"La matriz de feromonas de un sistema de hormigas recuerda a las estructuras de vecindad y memoria de la búsqueda tabú.",1,"La matriz de feromonas es una memoria adaptativa (acumula la experiencia de la búsqueda), como las memorias de la tabú.","tema 12"],
+[10,"Los sistemas de colonias de hormigas tienen buen comportamiento en problemas de tipo grafo dirigido, pero se encuentran con problemas cuando el grafo sufre cambios.",0,"Justo al revés: la evaporación y el aprendizaje continuo les permiten adaptarse a los cambios del grafo.","tema 12"],
+[10,"Los sistemas de colonias de hormigas tienen buen comportamiento en problemas de tipo grafo dirigido y cuando el grafo sufre cambios.",1,"Se adaptan bien a grafos dinámicos (p. ej. enrutamiento en redes).","tema 12"],
+[10,"Un sistema de colonias de hormigas es adecuado en grafos dirigidos, especialmente cuando el grafo sufre cambios, mientras que los sistemas de hormigas no son capaces de gestionar esos cambios.",0,"La primera parte es cierta, pero decir que los sistemas de hormigas «no son capaces» es demasiado tajante (la evaporación también les permite adaptarse). Respuesta más probable: falso.","tema 12"],
+[10,"Un sistema de colonias de hormigas es adecuado en problemas de grafos dirigidos, especialmente cuando el grafo sufre cambios.",1,"Sin la cláusula tajante de la anterior, es la versión correcta.","tema 12"],
+[10,"La matriz de feromonas permanece sin cambios en la construcción de las soluciones en los sistemas de colonias de hormigas.",0,"En el ACS hay actualización local online: se modifica mientras las hormigas construyen.","tema 12"],
+[10,"La matriz de feromonas permanece sin cambios en la construcción de las soluciones en los sistemas de hormigas; en los sistemas de colonias de hormigas sí se modifica mediante la actualización online de la feromona.",1,"AS actualiza al final de la iteración; ACS actualiza también durante la construcción (local).","tema 12"],
+[10,"La matriz de feromonas se modifica en la construcción de las soluciones en los sistemas de hormigas; en los sistemas de colonias de hormigas no se modifica hasta el final del proceso.",0,"Está invertido: es el ACS el que la modifica durante la construcción.","tema 12"],
+[10,"La memoria de búsqueda en los algoritmos basados en colonias de hormigas es la información heurística.",0,"La memoria es la matriz de feromonas. La información heurística es conocimiento previo del problema (p. ej. 1/distancia).","tema 12"],
+[10,"En un sistema de colonias de hormigas la actualización local de feromona en realidad es una evaporación que busca una mayor exploración hacia los arcos no visitados.",1,"Reduce la feromona de los arcos recién usados, así los siguientes prefieren arcos no visitados.","tema 12"],
+[10,"En los sistemas de colonias de hormigas, los caminos menos prometedores acumulan más feromona debido a la evaporación.",0,"La evaporación quita feromona; los caminos poco prometedores la pierden.","tema 12"],
+[11,"La metaheurística de particle swarm optimization tiene características muy cercanas a la evolución diferencial.",1,"Ambas son poblacionales, con vectores de reales, para optimización continua y usan diferencias entre individuos.","tema 13"],
+[11,"La evolución diferencial es una generalización de los sistemas de partículas.",0,"Son técnicas distintas y parecidas, pero ninguna generaliza a la otra.","tema 13"],
+[12,"El diseño de un algoritmo memético se realiza de forma sistemática.",0,"No hay una receta única: hay que decidir cuándo, sobre quién, con qué intensidad, etc. según el problema.","tema 14"],
+[12,"En el modelo de optimización del agente baldwiniano el agente resultante se introduce en la población y reemplaza al agente original o al más cercano.",0,"Eso es lamarckiano. En el baldwiniano solo se usa el fitness mejorado; el agente original no cambia.","tema 14"],
+[12,"La intensidad y frecuencia de un algoritmo memético deben estar equilibradas: baja frecuencia implica baja intensidad, y al contrario.",0,"Es al revés: con el mismo presupuesto, poca frecuencia permite mucha intensidad, y viceversa.","tema 14"],
+[12,"Un algoritmo memético permite hibridar una metaheurística basada en poblaciones y, justo al final del proceso evolutivo, una basada en trayectorias.",0,"La búsqueda local puede aplicarse en muchos momentos (cada generación, cada k generaciones…), no solo al final.","tema 14"],
+[12,"La aplicación de la búsqueda local en algoritmos meméticos puede realizarse cada cierto número de generaciones.",1,"Es una de las opciones de «cuándo aplicar» el optimizador local.","tema 14"],
+[12,"Un algoritmo memético tiene un buen equilibrio entre exploración y explotación para todos los problemas vistos en clase.",0,"No hay ninguna técnica buena para todos los problemas.","tema 14"],
+[12,"Una metaheurística híbrida mezcla técnicas que permitan obtener un buen equilibrio entre exploración y explotación.",1,"Es justo su objetivo.","tema 14"],
+[12,"Un algoritmo híbrido tiene un buen equilibrio entre exploración y explotación para todos los problemas vistos en clase.",0,"El «para todos» lo hace falso (no hay técnica universal).","tema 14"],
+[13,"En las metaheurísticas paralelas la búsqueda por entornos mantiene una solución en cada momento mientras que las poblaciones mantienen un conjunto de soluciones.",1,"Es la diferencia básica entre trayectorias y poblaciones.","tema 15"],
+[13,"En las metaheurísticas paralelas, el intercambio de información de las memorias adaptativas siempre provoca mayor pérdida de diversidad que el intercambio solo de la mejor solución.",0,"El «siempre» lo hace falso: depende de qué y cuánto se intercambie.","tema 15"],
+[13,"Las metaheurísticas paralelas se clasifican por tres dimensiones: cardinalidad del proceso de búsqueda, intercambio de información de procesos y diversidad de los métodos de búsqueda empleados.",1,"Son las tres dimensiones de Crainic y Toulouse.","tema 15"],
+[13,"El paradigma map-reduce oculta la complejidad de la distribución y tolerancia a fallos, y destaca por su adecuación ahorrando mucho tiempo en todos los problemas.",0,"Oculta esa complejidad, pero no ahorra tiempo en todos los problemas («todos»).","tema 15"],
+[13,"El paradigma Map-Reduce es un enfoque de paralelización empleado en metaheurísticas paralelas para mejorar la eficiencia de los enfoques clásicos.",1,"Se usa en metaheurísticas paralelas, sobre todo con muchos datos. Ojo: redacción genérica; la respuesta esperada es verdadero.","tema 15"],
+[13,"El paradigma Map-Reduce es un enfoque de paralelización que permite mejorar a los enfoques clásicos cuando tenemos problemas de eficiencia por un número de datos elevado.",1,"Es su caso de uso típico: grandes volúmenes de datos.","tema 15"],
+[13,"El teorema del «No Free Lunch» dice que una técnica puede funcionar muy bien para un problema, pero en otro tener un funcionamiento totalmente distinto.",1,"Promediando sobre todos los problemas, ningún algoritmo es mejor que otro.","tema 15"],
+[0,"Un algoritmo de metaheurísticas busca óptimos locales, y al final del proceso de búsqueda siempre obtiene un óptimo global.",0,"No hay garantía de óptimo global: son métodos aproximados.","pág. 25"],
+[0,"Cuando una metaheurística cae en un óptimo local quiere decir que ha encontrado un óptimo global del problema.",0,"Un óptimo local solo es el mejor de su entorno; el global es el mejor de todo el espacio.","pág. 81"],
+[0,"Los algoritmos aproximados nos proporcionan buenas soluciones (que en algún caso pueda ser un óptimo global) en tiempos razonables.",1,"Es la definición de método aproximado.","pág. 25"],
+[0,"Las ventajas de las metaheurísticas es que son algoritmos de propósito general con un gran éxito en la práctica y tienen una base teórica establecida.",0,"No siempre tienen base teórica: es un inconveniente.","págs. 40-45"],
+[0,"Los elementos clave de una metaheurística son la representación de la solución, las soluciones cercanas, la transformación de la solución actual en otra y la función de selección.",0,"Falta la evaluación (factibilidad y función objetivo); la «función de selección» no es un elemento clave.","pág. 36"],
+[0,"Los elementos clave de una metaheurística son: la representación, evaluación, entorno y movimiento de la solución.",1,"Son los cuatro bloques clave.","pág. 36"],
+[0,"La representación de una solución y su evaluación son elementos de una metaheurística que están condicionados a la técnica a emplear.",0,"Dependen del problema, no de la técnica.","pág. 36"],
+[0,"Mientras que el análisis cuantitativo de un algoritmo nos mide si la metaheurística está bien diseñada, el análisis cualitativo nos indica si tiene un funcionamiento correcto.",0,"Invertido: el cualitativo valora el diseño (claridad, intensificación, diversificación); el cuantitativo mide calidad, tiempo y robustez.","págs. 81-86"],
+[0,"Los algoritmos evolutivos junto con las redes neuronales (aprendizaje profundo) y los sistemas difusos son los principales conceptos de la «Computational Intelligence».",1,"Son los tres pilares clásicos de la Inteligencia Computacional.","pág. 5"],
+[1,"Un entorno de una solución es un espacio acotado dónde buscar posibles soluciones a las que mover la solución actual.",1,"Es el conjunto de soluciones alcanzables con el operador de vecino.","pág. 115"],
+[1,"Una búsqueda aleatoria nunca puede encontrar un óptimo global.",0,"Sí puede (probabilidad 1/m por iteración); solo es muy ineficiente.","pág. 133"],
+[2,"El enfriamiento simulado es una metaheurística de poblaciones que permite movimientos de empeoramiento basándose en conceptos de temperatura y probabilidad de aceptación.",0,"Permite empeoramientos, pero es de trayectorias (una sola solución).","pág. 184"],
+[2,"El valor de la temperatura inicial debería estar relacionado con el valor del coste de una solución en cualquier problema para tener una probabilidad de aceptación adaptativa con buen funcionamiento.",1,"T0 = (μ / −ln φ)·C(S0): depende del coste inicial.","pág. 205"],
+[2,"En el enfriamiento simulado, si la temperatura es muy baja respecto al tamaño del salto, entonces hay riesgo de quedar atrapado en un óptimo local.",1,"Con T baja casi no se aceptan empeoramientos.","pág. 211"],
+[3,"La memoria adaptativa de la búsqueda tabú nos permite restringir el entorno de búsqueda y explorar con capacidad de reacción en tiempo real.",1,"La memoria restringe el entorno (E*) y adapta la búsqueda a lo ya visitado.","pág. 221"],
+[3,"Un movimiento tabú no significa que no pueda realizarse por el criterio de aspiración.",1,"El criterio de aspiración permite aceptar un movimiento tabú (p. ej. si mejora la mejor solución).","págs. 233-248"],
+[3,"La memoria a corto plazo explícita de la búsqueda tabú almacena soluciones parciales ya visitadas en la trayectoria para no repetir esos movimientos.",0,"La memoria explícita guarda soluciones completas, no parciales.","pág. 225"],
+[3,"En la memoria a largo plazo, si se trabaja con variables enteras es recomendable usar un vector de dimensión n.",0,"El vector de n es para binarias; con enteras se usa una matriz M[i,k].","pág. 258"],
+[3,"Las estructuras de las memorias en la búsqueda tabú operan solo en las dimensiones de cantidad y frecuencia.",0,"Son cuatro: recencia, frecuencia, calidad e influencia.","pág. 229"],
+[3,"La búsqueda tabú persigue una exploración al comienzo y explotación en las etapas finales mediante la oscilación estratégica con probabilidad de 50 %.",0,"La oscilación estratégica elige al azar entre intensificar y diversificar al estancarse; no es un paso de explorar a explotar.","pág. 257"],
+[4,"En un algoritmo multiarranque es importante modificar el valor de la semilla en cada uno de los arranques.",1,"Si no, se repetirían las mismas soluciones iniciales.","pág. 291"],
+[4,"La búsqueda multiarranque básica se caracteriza porque las soluciones iniciales se generan de forma aleatoria.",1,"Inicio aleatorio + búsqueda local.","págs. 295-296"],
+[4,"El algoritmo multiarranque básico es muy ineficiente porque se pueden generar muchos puntos lejanos entre sí.",0,"El problema son muchos puntos <b>cercanos</b> entre sí, que llevan repetidamente al mismo óptimo local.","pág. 296"],
+[4,"El algoritmo de colonia de hormigas utiliza la técnica de multiarranque.",1,"La pág. 297 lo incluye entre los modelos multiarranque constructivos.","pág. 297"],
+[4,"Un algoritmo multiarranque básico debe utilizar una lista restringida de candidatos (LRC) para su búsqueda local.",0,"La LRC es de GRASP (fase de construcción), no del multiarranque básico.","pág. 301"],
+[4,"El algoritmo GRASP utiliza una función de selección aleatoria y adaptativa.",1,"Es la «R» y la «A» de GRASP (greedy randomized adaptive).","pág. 298"],
+[4,"Los componentes principales de un algoritmo ILS son: solución inicial aleatoria, adaptación, búsqueda local y parada.",0,"Faltan la perturbación/mutación y el criterio de aceptación; no hay «adaptación».","pág. 303"],
+[4,"Uno de los hechos en los que se basa VNS es que un mínimo local con una estructura de entornos no lo es necesariamente con otra.",1,"Por eso se cambia sistemáticamente de entorno.","pág. 310"],
+[4,"El algoritmo ILS realiza una operación de mutación/modificación sobre el óptimo encontrado, para lanzar otro nuevo proceso de búsqueda en esta solución modificada.",1,"Es exactamente su esquema.","pág. 303"],
+[4,"El algoritmo GRASP genera una lista restringida de candidatos desde los que lanzará múltiples búsquedas para buscar óptimos dentro del problema.",0,"La LRC se usa al construir la solución (elegir el siguiente componente); la búsqueda local se lanza después.","pág. 301"],
+[5,"Los algoritmos de poblaciones tienen una baja base teórica.",1,"Suele citarse como inconveniente. Poco seguro: no aparece en el PDF.","tema 6"],
+[5,"Dos de las características de las metaheurísticas basadas en poblaciones son que son computacionalmente costosas (lentas) y el paralelismo intrínseco.",1,"Evaluar muchos individuos cuesta, pero se pueden evaluar en paralelo.","tema 6"],
+[5,"La principal diferencia entre las búsquedas en trayectorias y poblaciones es que en las primeras se realiza la evolución de una solución en el mismo instante de tiempo, mientras que en las poblaciones se evolucionan múltiples soluciones.",1,"Es la diferencia básica.","pág. 325"],
+[5,"Los algoritmos basados en poblaciones tienden a una mayor explotación que los basados en trayectorias.",0,"Al revés: las de poblaciones son más exploradoras.","pág. 332"],
+[5,"Los algoritmos basados en poblaciones tienen una baja aplicabilidad.",0,"Se aplican a muchísimos problemas.","pág. 419"],
+[5,"Un algoritmo basado en poblaciones tiene la capacidad de obtener muchos óptimos locales que funcionen bien en distintas dimensiones (objetivos) del espacio de búsqueda de una misma generación.",1,"Al mantener varias soluciones a la vez, puede cubrir varias zonas u objetivos.","tema 6"],
+[5,"El coste del cálculo de las funciones de fitness para todos los individuos de los algoritmos basados en poblaciones se considera aceptable para la resolución de problemas, aunque en una generación tengamos múltiples individuos.",0,"Evaluar toda la población es uno de sus inconvenientes (coste alto). Poco seguro.","tema 6"],
+[5,"Los algoritmos basados en poblaciones pueden considerarse también constructivos.",1,"Algunos parten de soluciones parciales (hormigas).","pág. 327"],
+[6,"El concepto de la evolución de las especies fue la base teórica principal en el desarrollo de los algoritmos genéticos.",1,"Se inspiran en la evolución natural.","pág. 340"],
+[6,"Una alta presión selectiva es clave para mejorar la diversidad de los individuos de un algoritmo.",0,"Más presión = menos diversidad y riesgo de convergencia prematura.","pág. 421"],
+[6,"El cruce en dos puntos para el problema del TSP te devuelve soluciones factibles.",0,"Puede repetir u omitir ciudades; hace falta un cruce de orden.","pág. 379"],
+[6,"Tanto el diseño de un individuo, como su evaluación y la forma de iniciar la población depende del problema a resolver.",1,"Son pasos ligados al problema.","pág. 354"],
+[6,"El modelo estacionario produce una alta presión.",1,"Sobre todo si se reemplaza al peor.","pág. 386"],
+[6,"El modelo generacional produce una convergencia rápida cuando se reemplazan los peores.",0,"Esa convergencia rápida es del estacionario que reemplaza al peor.","pág. 386"],
+[6,"Los esquemas de selección son: Adaptación, Ruleta y Sorteo.",0,"Son aleatoria, ruleta y torneo.","pág. 374"],
+[6,"La selección por ruleta ejerce una presión selectiva muy alta.",1,"Es su característica principal.","pág. 375"],
+[6,"Un operador de cruce no es necesario que deba permitir alcanzar cualquier parte del espacio de búsqueda.",1,"Quien debe poder alcanzar cualquier zona es la mutación.","pág. 383"],
+[6,"El alto elitismo consiste en utilizar una población intermedia con todos los padres (N) y todos los descendientes y seleccionar los N mejores. Esto se combina con componentes de alto grado de diversidad.",1,"Esa es su definición.","pág. 385"],
+[6,"La adaptación o fitness de un individuo determina su probabilidad de supervivencia durante el proceso de reemplazamiento.",1,"El reemplazo favorece a los mejor adaptados.","pág. 356"],
+[6,"El operador de selección por ruleta provoca una mayor presión selectiva que un torneo.",1,"El torneo con k pequeño la modera.","pág. 375"],
+[6,"El modelo generacional de los algoritmos genéticos es elitista por definición.",0,"El elitismo es opcional (aconsejado).","pág. 385"],
+[6,"Un individuo es una solución candidata que siempre deberá ser factible.",0,"Puede ser infactible (se gestiona con penalización, etc.).","pág. 28"],
+[6,"Los algoritmos genéticos son de propósito general y se pueden utilizar para resolver cualquier problema, aunque donde mejor funcionan son en los problemas de optimización continua.",0,"En continua destaca la evolución diferencial; no hay técnica mejor para todo.","pág. 491"],
+[7,"Los algoritmos de programación genética son un intento de generalizar a los algoritmos genéticos.",1,"Extienden el AG a estructuras (árboles) de tamaño variable.","pág. 435"],
+[7,"Un algoritmo de programación genética lleva asociada una gramática que nos restringe el espacio de búsqueda mediante soluciones factibles.",1,"La gramática define las expresiones válidas.","pág. 442"],
+[7,"El operador de recolección de repetidos es de especial relevancia en los algoritmos de programación genética debido a la gran cantidad de recursos que consume.",0,"No es un operador visto en PG; lo que preocupa es el bloat. Poco seguro.","pág. 468"],
+[7,"La profundidad de los árboles en la programación genética siempre debe estar cercana a 5.",0,"La fija el usuario según el problema.","pág. 452"],
+[7,"En un problema de regresión simbólica es adecuado emplear representaciones de soluciones dinámicas.",1,"Árboles de tamaño variable.","pág. 471"],
+[7,"Los pasos necesarios para construir un algoritmo de programación genética y algoritmos genéticos son prácticamente los mismos.",1,"Cambian sobre todo la representación y los operadores.","pág. 435"],
+[8,"La evolución de la población del algoritmo de evolución diferencial mediante el operador de recombinación ternario permite equilibrar la explotación al comienzo y la explotación al final del proceso de forma automática.",0,"Es exploración al comienzo y explotación al final (autoadaptación).","pág. 500"],
+[8,"La evolución de la población del algoritmo de evolución diferencial mediante el operador de recombinación ternario permite equilibrar la explotación al comienzo y la exploración al final del proceso de forma automática.",0,"Invertido: exploración al comienzo, explotación al final.","pág. 500"],
+[8,"Los algoritmos de evolución diferencial están cercanos a los de programación genética sobre todo en la representación de individuos, y funcionan muy bien en optimización continua (regresión).",0,"ED usa vectores de reales; PG usa árboles.","pág. 491"],
+[8,"El operador DE/current-to-pbest incorpora al menos un individuo de la población élite en el operador de recombinación ternario.",1,"Usa uno de los p mejores.","pág. 534"],
+[8,"El operador DE/current-to-best siempre incorpora la élite de la población en el operador de recombinación ternario.",1,"Usa el mejor individuo.","pág. 534"],
+[8,"El algoritmo JADE es uno de los algoritmos más importantes de la literatura de la evolución diferencial y su principal ventaja viene determinada por el concepto de élite y la autoadaptación de los factores de mutación y recombinación.",1,"Es su definición.","pág. 533"],
+[8,"El algoritmo SADE pertenece al grupo de los algoritmos genéticos autoadaptativos.",0,"Es de evolución diferencial.","pág. 533"],
+[8,"El operador de recombinación ternario mezcla conceptos de cruce y mutación en un único operador.",1,"Combina vectores (mutación) y cruce discreto.","pág. 492"],
+[8,"La propagación genética es una generalización de la evolución diferencial.",0,"Seguramente se refiere a la programación genética, que tampoco generaliza la ED.","pág. 358"],
+[10,"Los sistemas de hormigas y los sistemas de colonias de hormigas son algoritmos constructivos ya que van construyendo la solución paso a paso.",1,"Cada hormiga construye su solución añadiendo componentes.","tema 12"],
+[10,"La matriz de feromonas sufre en mayor parte evaporación en los sistemas de colonias de hormigas.",1,"En el ACS solo deposita la mejor; el resto recibe evaporación (local). Poco seguro.","tema 12"],
+[10,"La matriz de feromonas de un sistema de colonia de hormigas recuerda a las estructuras de vecindad y memoria de la búsqueda tabú.",1,"Es una memoria adaptativa.","tema 12"],
+[13,"El teorema de No Free Lunch nos dice que dependiendo de la intensidad y frecuencia de un algoritmo memético podemos adaptar un algoritmo a un problema y mejorar sus resultados.",0,"El NFL dice que ningún algoritmo es mejor en todos los problemas; no habla de intensidad y frecuencia.","tema 15"],
+[13,"Una metaheurística de población en entornos de paralelización puede ser resuelta mediante un enfoque global o un enfoque local.",1,"Paralelización global (reparto de evaluaciones) o local/distribuida (subpoblaciones). Poco seguro.","tema 15"]
+];
+var f=document.getElementById("flt"),list=document.getElementById("list");
+f.innerHTML="<option value=\"\">Todos los temas</option>"+T.map(function(t,i){return "<option value=\""+i+"\">"+N[i]+". "+t+"</option>"}).join("");
+list.innerHTML=Q.map(function(x,i){
+return "<article class=\"card\" data-t=\""+x[0]+"\" data-c=\""+(x[2]?0:1)+"\"><div class=\"hd\"><span class=\"n\">"+(i+1)+"</span><span class=\"tag\">"+T[x[0]]+"</span></div><p>"+x[1]+"</p><button class=\"opt\">Verdadero</button><button class=\"opt\">Falso</button><div class=\"sol\" hidden><p class=\"ok\">✅ Solución: <b>"+(x[2]?"Verdadero":"Falso")+"</b></p><p>🧒 En sencillo: "+x[3]+"</p><p>📘 Teoría: "+x[4]+"</p></div></article>"}).join("");
+f.onchange=function(){document.querySelectorAll(".card").forEach(function(c){c.hidden=f.value!==""&&c.dataset.t!==f.value})};
+document.addEventListener("click",function(e){var t=e.target.closest("button");if(!t)return;
+if(t.dataset.tab){document.querySelectorAll(".tabs button").forEach(function(b){b.classList.toggle("on",b==t)});
+["q","t","e"].forEach(function(id){document.getElementById(id).hidden=t.dataset.tab!=id});f.style.visibility=t.dataset.tab=="q"?"visible":"hidden";return}
+var c=t.closest(".card");if(!c||!t.classList.contains("opt"))return;var ok=+c.dataset.c;
+c.querySelectorAll(".opt").forEach(function(o,j){o.disabled=true;if(j==ok)o.classList.add("good");else if(o==t)o.classList.add("wrong")});
+c.querySelector(".sol").hidden=false});
+var D=[
+["Búsqueda local del mejor","Genera todo el entorno y se mueve al mejor vecino; termina en un óptimo local.",["Generar solución inicial S","Generar el entorno completo N(S)","!Elegir el mejor vecino S′ de N(S)","?¿S′ mejora a S?|No: fin|Sí","S = S′"],[[4,1,""]]],
+["Búsqueda local del primer mejor","Se mueve al primer vecino que mejora, sin mirar todo el entorno.",["Generar solución inicial S","!Generar vecinos de N(S) uno a uno","?¿Algún vecino mejora a S?|No: fin|Sí","S = primer vecino que mejora"],[[3,1,""]]],
+["Búsqueda aleatoria","El entorno es todo el espacio: P(óptimo en una iteración) = 1/m.",["Generar solución aleatoria S","Evaluar S","!Guardar la mejor solución","?¿Parada?|Sí|"],[[3,0,"No"]]],
+["Enfriamiento simulado","Acepta peores con probabilidad exp(−δ/T): explora con T alta y explota con T baja.",["Solución inicial S; T = T0","Generar vecina S′ de N(S)","!Aceptar S′ si δ &lt; 0 o U(0,1) &lt; exp(−δ/T)","?¿Fin de L(T) vecinos?||Sí","Enfriar: T = α·T","?¿Parada (T ≤ Tf)?|Sí|"],[[3,1,"No"],[5,1,"No"]]],
+["Búsqueda tabú","La memoria a corto plazo restringe el entorno; la de largo plazo intensifica o diversifica al estancarse.",["Solución inicial S; lista tabú vacía","Generar E(S) y descartar movimientos tabú (E*)","!Elegir el mejor vecino de E*, aunque empeore","Actualizar lista tabú y mejor solución","?¿Parada?|Sí|No","?¿Estancamiento?||Sí","Memoria a largo plazo: intensificar o diversificar"],[[5,1,"No"],[6,1,""]]],
+["Búsqueda multiarranque","Dos etapas repetidas: solución inicial y búsqueda local.",["Etapa 1: generar solución inicial","!Etapa 2: búsqueda local sobre ella","Actualizar la mejor solución","?¿Parada?|Sí|"],[[3,0,"No"]]],
+["GRASP","Construcción greedy aleatorizada con lista restringida de candidatos (LRC) y búsqueda local.",["Solución parcial vacía","Evaluar candidatos y crear la LRC","!Elegir al azar de la LRC y añadir","?¿Solución completa?||Sí","Búsqueda local","Actualizar la mejor solución","?¿Parada?|Sí|"],[[3,1,"No"],[6,0,"No"]]],
+["ILS","Perturba el óptimo local encontrado y vuelve a optimizar.",["Solución inicial S0","Búsqueda local → S*","!Perturbar S* → S′","Búsqueda local sobre S′ → S*′","Criterio de aceptación: ¿S*′ sustituye a S*?","?¿Parada?|Sí|"],[[5,2,"No"]]],
+["VNS","Cambia sistemáticamente de estructura de entorno N_k.",["Solución inicial S; k = 1","!Agitación: S′ aleatoria de N_k(S)","Búsqueda local desde S′ → S″","?¿S″ mejora a S?||Sí","S = S″; k = 1","?¿Parada?|Sí|"],[[3,1,"No: k=k+1"],[5,1,"No"]]],
+["Metaheurística de poblaciones (esquema general)","Mejora iterativa de una población: generar, evaluar y reemplazar.",["Generar población inicial","Evaluar población","?Parada|Sí|No","!Generar nueva población"],[[3,1,""]]],
+["Algoritmo evolutivo generacional","Se reemplaza toda la población en cada generación; se aconseja elitismo.",["Generar población inicial","Evaluar población","?¿Parada?|Sí|No","!Selección de padres","Recombinación (cruce)","Mutación","Evaluar descendientes","Reemplazamiento: nueva población (con elitismo)"],[[7,2,""]]],
+["Algoritmo evolutivo estacionario","En cada paso se usan pocos padres y los hijos sustituyen a individuos de la población.",["Generar y evaluar población inicial","?¿Parada?|Sí|No","!Seleccionar pocos padres","Cruce y mutación","Evaluar descendientes","Reemplazo: los hijos sustituyen a individuos (p. ej. el peor)"],[[5,1,""]]],
+["Programación genética","Como un algoritmo evolutivo, pero con árboles; hay que controlar el bloat.",["Generar población inicial de árboles (completa, creciente o combinada)","Evaluar población","?¿Parada?|Sí|No","Selección de padres","!Cruce: intercambio de subárboles","Mutación (subárbol, terminal, nodos, constantes)","Reemplazamiento con élite y control del bloat"],[[6,2,""]]],
+["Evolución diferencial","Mutación v = x_r0 + F(x_r1 − x_r2), cruce discreto y el hijo compite con su padre directo.",["Generar población de vectores reales","Evaluar población","?¿Parada?|Sí|No","Para cada xi: elegir 3 vectores r0, r1, r2","!Mutación: v = x_r0 + F·(x_r1 − x_r2)","Cruce discreto con ratio Cr → hijo u","Evaluar u","u sustituye a xi solo si es mejor"],[[7,2,""]]]
+];
+function wr(s,n){var l=[],c="";s.split(" ").forEach(function(x){if((c+" "+x).trim().length>n){l.push(c);c=x}else c=(c+" "+x).trim()});l.push(c);return l}
+function fl(d,k){var N=d[2],L=d[3],cx=205,g=26,t=50,P=[],s="",T="#00807a",m="a"+k,last=N.length-1;
+N.forEach(function(n){var h=n[0]=="?"?70:54;P.push([t,h]);t+=h+g});
+var eb=N[last][0]!="?"&&!L.some(function(l){return l[0]==last}),ye=P[last][0]+P[last][1];
+function ar(x1,y1,x2,y2){return "<line x1='"+x1+"' y1='"+y1+"' x2='"+x2+"' y2='"+y2+"' stroke='"+T+"' stroke-width='3' marker-end='url(#"+m+")'/>"}
+function tx(x,y,c,z,a,b){return "<text x='"+x+"' y='"+y+"' text-anchor='"+(a||"middle")+"' font-size='"+z+"' font-weight='"+(b?700:400)+"' fill='"+c+"'>"+(typeof b=="string"?b:"")}
+function lb(x,y,a,q){return q?"<text x='"+x+"' y='"+y+"' text-anchor='"+a+"' font-size='11' fill='currentColor'>"+q+"</text>":""}
+function en(x,y){return "<circle cx='"+x+"' cy='"+y+"' r='15' fill='none' stroke='"+T+"' stroke-width='3'/><circle cx='"+x+"' cy='"+y+"' r='9' fill='"+T+"'/>"}
+s+="<defs><marker id='"+m+"' markerUnits='userSpaceOnUse' markerWidth='10' markerHeight='10' refX='9' refY='5' orient='auto'><path d='M0,0L10,5L0,10z' fill='"+T+"'/></marker></defs><circle cx='"+cx+"' cy='14' r='12' fill='"+T+"'/>"+ar(cx,26,cx,50);
+N.forEach(function(n,i){var c=n[0],dm=c=="?",r=c=="!",p=P[i],y=p[0],h=p[1],f=(dm||r?n.slice(1):n).split("|"),ls=wr(f[0],dm?18:26),fill=r?"#e8260c":T;
+s+=dm?"<polygon points='"+(cx-105)+","+(y+h/2)+" "+cx+","+y+" "+(cx+105)+","+(y+h/2)+" "+cx+","+(y+h)+"' fill='"+fill+"'/>":"<rect x='"+(cx-105)+"' y='"+y+"' width='210' height='"+h+"' rx='3' fill='"+fill+"'/>";
+ls.forEach(function(q,j){s+="<text x='"+cx+"' y='"+(y+h/2+(j-(ls.length-1)/2)*15+5)+"' text-anchor='middle' font-size='"+(dm?12:13)+"' font-weight='700' fill='#fff'>"+q+"</text>"});
+if(i<last)s+=ar(cx,y+h,cx,P[i+1][0]);
+if(dm){if(i<last)s+=lb(cx+8,y+h+17,"start",f[2]);if(f[1])s+=ar(cx+105,y+h/2,cx+150,y+h/2)+lb(cx+112,y+h/2-6,"start",f[1])+en(cx+165,y+h/2)}});
+var rk=L.map(function(l,i){return[l[0]-l[1],i]}).sort(function(a,b){return a[0]-b[0]}).map(function(a){return a[1]});
+L.forEach(function(l,i){var x=90-16*rk.indexOf(i),ya=P[l[0]][0]+P[l[0]][1]/2,yb=P[l[1]][0]+P[l[1]][1]/2;
+s+="<path d='M"+(cx-105)+","+ya+"H"+x+"V"+yb+"H"+(cx-105)+"' fill='none' stroke='"+T+"' stroke-width='3' marker-end='url(#"+m+")'/>"+lb(x-4,ya-5,"end",l[2])});
+if(eb)s+=ar(cx,ye,cx,ye+g)+en(cx,ye+g+15);
+return "<svg viewBox='0 0 395 "+(ye+(eb?g+34:10))+"' width='395' xmlns='http://www.w3.org/2000/svg' font-family='system-ui,sans-serif'>"+s+"</svg>"}
+document.getElementById("e").innerHTML=D.map(function(d,i){return "<div class=\"card\"><h3 style=\"margin-top:0\">"+d[0]+"</h3><p class=\"sub\">"+d[1]+"</p><div class=\"fl\">"+fl(d,i)+"</div></div>"}).join("");
+</script></body></html>
