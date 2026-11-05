@@ -8,25 +8,95 @@
 <body>
 <!-- INICIO · Para incluirlo en tu web copia desde aquí hasta FIN. Los estilos solo afectan al bloque .pb -->
 <style>
-.pb{--pb-fg:var(--fg,#1d1d1f);--pb-bg:var(--card,#fff);--pb-bd:var(--bd,#d6d9de);--pb-ac:var(--acc,#2b59c3);--pb-mu:var(--mut,#5f6670);--pb-soft:var(--soft,#f1f4f9);color:var(--pb-fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;max-width:900px;margin:0 auto;padding:8px}
-@media (prefers-color-scheme:dark){.pb{--pb-fg:var(--fg,#e8edf2);--pb-bg:var(--card,#18222c);--pb-bd:var(--bd,#2c3a47);--pb-ac:var(--acc,#7ea2ee);--pb-mu:var(--mut,#9aa8b5);--pb-soft:var(--soft,#1c2733)}}
-.pb *{box-sizing:border-box}.pb h2.pb-t{font-size:1.6rem;margin:.2em 0 .1em}.pb .pb-sub{color:var(--pb-mu);margin:0 0 1em}
-.pb h3{font-size:1.1rem;margin:1.6em 0 .4em;color:var(--pb-ac)}.pb h4{font-size:1rem;margin:1.3em 0 .3em}.pb p{margin:.4em 0}.pb ul,.pb ol{margin:.3em 0 .6em;padding-left:1.3em}.pb li{margin:.2em 0}
-.pb code{bapbground:var(--pb-soft);padding:1px 5px;border-radius:4px;font-size:.9em}
-.pb-sc{overflow-x:auto;margin:.5em 0}.pb table{border-collapse:collapse;width:100%;font-size:.92rem}.pb th,.pb td{border:1px solid var(--pb-bd);padding:6px 9px;text-align:left;vertical-align:top}.pb th{bapbground:var(--pb-soft)}
-.pb-bar{position:relative;min-width:90px;height:22px;bapbground:var(--pb-soft);border-radius:4px;overflow:hidden}.pb-bar i{position:absolute;inset:0 auto 0 0;bapbground:var(--pb-ac);opacity:.35}.pb-bar span{position:relative;padding-left:7px;font-weight:700;line-height:22px}
-.pb-box{bapbground:var(--pb-bg);border:1px solid var(--pb-bd);border-left:4px solid var(--pb-ac);border-radius:8px;padding:.2em 1em .5em;margin:.9em 0}.pb-box h3{margin:.7em 0 .3em}
-.pb .sub{color:var(--pb-mu);font-size:.88rem}.pb a{color:var(--pb-ac)}
-.pb h3.pb-p{font-size:1.25rem;border-bottom:2px solid var(--pb-bd);padding-bottom:4px;margin-top:2em}.pb .pb-pts{font-weight:400;color:var(--pb-mu);font-size:.9rem}
-.pb-enun{background:var(--pb-soft);border-radius:8px;padding:.5em 1em;margin:.6em 0}.pb-sol{border-left:4px solid var(--pb-ac);padding-left:1em;margin:.6em 0 1.2em}
-.pb-res{background:var(--pb-bg);border:1px solid var(--pb-ac);border-radius:8px;padding:.4em .9em;margin:.6em 0;font-weight:600}
-.pb-bits td{text-align:center;font-weight:600}.pb-g td,.pb-g th{text-align:center;padding:4px 3px;min-width:34px;font-size:.78rem}
-.pb-g .P1{background:rgba(43,89,195,.30)}.pb-g .P2{background:rgba(40,160,90,.30)}.pb-g .P3{background:rgba(230,140,30,.32)}.pb-g .IR{background:rgba(128,128,128,.28)}.pb-g .IH{background:rgba(210,60,60,.32)}.pb-g .IS{background:rgba(150,80,200,.30)}
-.pb-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:.8em 0}.pb-tab{font:inherit;padding:7px 16px;border:1px solid var(--pb-bd);border-radius:999px;background:var(--pb-bg);color:var(--pb-fg);cursor:pointer}.pb-tab.on{background:var(--pb-ac);color:#fff;border-color:var(--pb-ac)}.pb-tab:focus-visible{outline:3px solid var(--pb-ac);outline-offset:2px}.pb [hidden]{display:none}
-.pb-g .P4{background:rgba(180,60,150,.30)}.pb-g td.IO{background:transparent}
-.pb td.f{color:#c0392b;font-weight:700}.pb td.a{color:#1f8a4c}
-.pb-g .IH1,.pb-g .IH2{background:rgba(210,60,60,.32)}.pb-g .A{background:rgba(43,89,195,.30)}.pb-g .B{background:rgba(40,160,90,.30)}.pb-g .C{background:rgba(230,140,30,.32)}.pb-g .D{background:rgba(180,60,150,.30)}.pb-g .Ex{background:rgba(40,160,90,.32)}.pb-g .ES{background:rgba(230,140,30,.32)}.pb-g .CW{background:rgba(128,128,128,.28)}
+  :root {
+    --pb-bg: #f6f7f9;
+    --pb-fg: #1d2330;
+    --pb-bd: #dde1e8;
+    --pb-ac: #2f5fd0;
+    --pb-mu: #5b6475;
+    --pb-soft: #eef0f4;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --pb-bg: #12151c;
+        --pb-fg: #e6e9f0;
+        --pb-bd: #2c3342;
+        --pb-ac: #7da2ff;
+        --pb-mu: #9aa3b5;
+        --pb-soft: #262c3a;
+    }
+}
+
+:root[data-theme="dark"] {
+    --pb-bg: #12151c;
+    --pb-fg: #e6e9f0;
+    --pb-bd: #2c3342;
+    --pb-ac: #7da2ff;
+    --pb-mu: #9aa3b5;
+    --pb-soft: #262c3a;
+}
+
+.pb {
+    color: var(--pb-fg);
+    background: var(--pb-bg) !important;
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 8px;
+}
+
+/* Forzar que el body también coja el color correcto si se abre solo */
+body {
+    background-color: var(--pb-bg) !important;
+    margin: 0;
+}
+
+.pb * { box-sizing: border-box; }
+.pb h2.pb-t { font-size: 1.6rem; margin: .2em 0 .1em; color: var(--pb-fg); }
+.pb .pb-sub { color: var(--pb-mu); margin: 0 0 1em; }
+.pb h3 { font-size: 1.1rem; margin: 1.6em 0 .4em; color: var(--pb-ac); }
+.pb h4 { font-size: 1rem; margin: 1.3em 0 .3em; color: var(--pb-fg); }
+.pb p { margin: .4em 0; color: var(--pb-fg); }
+.pb ul, .pb ol { margin: .3em 0 .6em; padding-left: 1.3em; color: var(--pb-fg); }
+.pb li { margin: .2em 0; color: var(--pb-fg); }
+.pb code { background: var(--pb-soft); padding: 1px 5px; border-radius: 4px; font-size: .9em; color: var(--pb-fg); }
+.pb-sc { overflow-x: auto; margin: .5em 0; }
+.pb table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+.pb th, .pb td { border: 1px solid var(--pb-bd); padding: 6px 9px; text-align: left; vertical-align: top; color: var(--pb-fg); }
+.pb th { background: var(--pb-soft); color: var(--pb-ac); }
+
+/* Cajas de enunciado y solución */
+.pb-enun { background: var(--pb-soft); border-radius: 8px; padding: .5em 1em; margin: .6em 0; }
+.pb-sol { border-left: 4px solid var(--pb-ac); padding-left: 1em; margin: .6em 0 1.2em; }
+.pb-res { background: var(--pb-bg); border: 1px solid var(--pb-ac); border-radius: 8px; padding: .4em .9em; margin: .6em 0; font-weight: 600; color: var(--pb-fg); }
+.pb-box { background: var(--pb-bg); border: 1px solid var(--pb-bd); border-left: 4px solid var(--pb-ac); border-radius: 8px; padding: .2em 1em .5em; margin: .9em 0; }
+
+.pb a { color: var(--pb-ac); }
+.pb h3.pb-p { font-size: 1.25rem; border-bottom: 2px solid var(--pb-bd); padding-bottom: 4px; margin-top: 2em; }
+.pb .pb-pts { font-weight: 400; color: var(--pb-mu); font-size: .9rem; }
+
+/* Pestañas */
+.pb-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: .8em 0; }
+.pb-tab { font: inherit; padding: 7px 16px; border: 1px solid var(--pb-bd); border-radius: 999px; background: var(--pb-bg); color: var(--pb-fg); cursor: pointer; }
+.pb-tab.on { background: var(--pb-ac); color: #fff; border-color: var(--pb-ac); }
+.pb [hidden] { display: none; }
+
+/* Tablas Gantt y celdas especiales */
+.pb-bits td { text-align: center; font-weight: 600; }
+.pb-g td, .pb-g th { text-align: center; padding: 4px 3px; min-width: 34px; font-size: .78rem; color: var(--pb-fg); }
+.pb-g .P1, .pb-g .A { background: rgba(43,89,195,.30); }
+.pb-g .P2, .pb-g .B { background: rgba(40,160,90,.30); }
+.pb-g .P3, .pb-g .C { background: rgba(230,140,30,.32); }
+.pb-g .P4, .pb-g .D { background: rgba(180,60,150,.30); }
+.pb-g .IR, .pb-g .CW { background: rgba(128,128,128,.28); }
+.pb-g .IH, .pb-g .IH1, .pb-g .IH2 { background: rgba(210,60,60,.32); }
+.pb-g .IS, .pb-g .ES { background: rgba(150,80,200,.30); }
+.pb-g .Ex { background: rgba(40,160,90,.32); }
+.pb td.f { color: #c0392b; font-weight: 700; }
+.pb td.a { color: #1f8a4c; }
 </style>
+  
 <section class="pb" id="problemas-examenes">
 <h2 class="pb-t">Problemas de examen · Sistemas Operativos</h2>
 <p class="pb-sub">Enunciados y solución paso a paso, siguiendo los apuntes de clase. En el examen solo puntúa un problema si se justifica y se describen los cálculos.</p>
